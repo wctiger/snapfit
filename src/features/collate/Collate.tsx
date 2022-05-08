@@ -10,15 +10,11 @@ const Collate = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     useEffect(() => {
         const ctx = canvasRef.current?.getContext('2d');
-        if (uploadImage) {
+        if (uploadImage && cropArea) {
             const image = new Image();
-            image.setAttribute('style', {
-                maxHeight: '100%',
-                maxWidth: '100%',
-            });
             image.onload = () => {
                 console.log(cropArea);
-                ctx?.drawImage(image, 0, 0);
+                ctx?.drawImage(image, cropArea.x, cropArea.y, cropArea.width, cropArea.height, 0, 0, 100, 100);
             };
             image.src = uploadImage as string;
         }
