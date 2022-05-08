@@ -2,7 +2,7 @@ import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { useRecoilValue } from 'recoil';
-import { themeStore } from './stores';
+import { themeStore } from '../stores';
 
 const Theme: FC<{ children: ReactNode }> = props => {
     // TODO: listen to system theme change

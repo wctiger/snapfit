@@ -1,19 +1,24 @@
 import { Container, Grid } from '@mui/material';
-import Content from './Content';
+import { FC, ReactNode } from 'react';
 import Footer from './Footer';
 import TopBar from './TopBar';
 
-const Layout = () => {
+interface ILayoutProps {
+    leftComp: ReactNode;
+    rightComp: ReactNode;
+}
+
+const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
     return (
         <>
             <TopBar />
-            <Container maxWidth="md">
+            <Container maxWidth="lg">
                 <Grid container spacing={1}>
-                    <Grid item xs={12} sm={6} style={{background: 'orangered', height: 800}}>
-                        <Content VerbiageComp={'TEST1'} SelectionComp={'Test2'} DisplayComp={'Test3'} />
+                    <Grid item xs={12} sm={6} style={{ height: '80vh' }}>
+                        {leftComp}
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                    <Content VerbiageComp={'TEST1'} SelectionComp={'Test2'} DisplayComp={'Test3'} />
+                        {rightComp}
                     </Grid>
                 </Grid>
                 <Footer></Footer>

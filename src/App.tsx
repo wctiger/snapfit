@@ -1,13 +1,13 @@
 import { RecoilRoot } from 'recoil';
 import './App.css';
-import Layout from './components/layout';
-import Theme from './Theme';
+import ContentFactory from './components/ContentFactory';
+import Theme from './components/Theme';
 
 function App() {
     return (
         <RecoilRoot>
             <Theme>
-                <Layout />
+                <ContentFactory />
             </Theme>
         </RecoilRoot>
     );
