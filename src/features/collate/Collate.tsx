@@ -8,13 +8,25 @@ const Collate = () => {
     const uploadImage = useRecoilValue(uploadImageStore);
     const cropArea = useRecoilValue(cropStore);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    
     useEffect(() => {
         const ctx = canvasRef.current?.getContext('2d');
-        if (uploadImage && cropArea) {
+        if (uploadImage && cropArea && canvasRef.current) {
             const image = new Image();
             image.onload = () => {
                 console.log(cropArea);
-                ctx?.drawImage(image, cropArea.x, cropArea.y, cropArea.width, cropArea.height, 0, 0, 100, 100);
+                const ratio = image.height / image.width;
+                const croppedImageWidth = image.width * cropArea.width / 100;
+                const cropppedImageHeight = image.height * cropArea.height / 100;
+
+                const canvasWidth = 200;
+                const canvasHeight = canvasWidth * ratio;
+
+                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 0, 0, canvasWidth, canvasHeight);
+                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 200, 0, canvasWidth, canvasHeight);
+                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 0, canvasHeight, canvasWidth, canvasHeight);
+                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 200, canvasHeight, canvasWidth, canvasHeight);
+                // ctx?.drawImage(image, 0, 0, image.width, image.height, 0, 0, 100, 75)
             };
             image.src = uploadImage as string;
         }
@@ -26,7 +38,7 @@ const Collate = () => {
             <Typography variant="h3">Image Preview</Typography>
             {uploadImage && (
                 <CollateContainer>
-                    <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }}></canvas>
+                    <canvas ref={canvasRef} width={450} height={330}></canvas>
                 </CollateContainer>
             )}
         </StyledPaper>
