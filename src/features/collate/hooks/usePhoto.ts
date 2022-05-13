@@ -48,14 +48,24 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     // extract the cropped image using these values
     const data = ctx.getImageData(pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height);
 
-    // // set canvas width to final desired crop size - this will clear existing context
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
+    // testing
+    const imagePositions = calculatePositions(inchToPx(6), inchToPx(4), inchToPx(0.6), inchToPx(1));
 
-    // // paste generated rotate image at the top left corner
-    ctx.putImageData(data, 0, 0);
+    // // // set canvas width to final desired crop size - this will clear existing context
+    // canvas.width = pixelCrop.width;
+    // canvas.height = pixelCrop.height;
 
-    calculatePositions(inchToPx(6), inchToPx(4), inchToPx(0.6), inchToPx(1));
+    // testing. Remember this is screen DPI - need to change to use pring DPI.
+    canvas.width = inchToPx(6);
+    canvas.height = inchToPx(4);
+    // // // paste generated rotate image at the top left corner
+    // ctx.putImageData(data, 0, 0);
+    for (const row of imagePositions) {
+        for (const pos of row) {
+            const { pos_x, pos_y } = pos;
+            ctx.putImageData(data, pos_x, pos_y);
+        }
+    }
 
     // As Base64 string
     return canvas.toDataURL('image/jpeg');
