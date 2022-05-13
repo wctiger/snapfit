@@ -19,7 +19,7 @@ const Crop = () => {
 
     const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
         console.log(croppedArea, croppedAreaPixels);
-        setCrop(croppedArea);
+        setCrop(croppedAreaPixels);
     }, []);
 
     const [cropRatio, setCropRatio] = useState(1); // TODO: dynamic
@@ -34,19 +34,33 @@ const Crop = () => {
                 Reset Image
             </Button>
             <Box>
-                <FormControlLabel control={<Switch checked={customSizing} onChange={(e, checked) => {
-                    setCustomSizing(checked);
-                }} />} label="Use Custom Sizing" />
-                {
-                    customSizing ?
-                    <></> : <Select onChange={({target: { value}}) => {
-                        setCropRatio(value as number)
-                    }}>
-                        {Object.keys(sizeConfig).map(key => 
-                            <MenuItem value={sizeConfig[key].width / sizeConfig[key].height}>{key}</MenuItem>
-                        )}
+                {/* <FormControlLabel
+                    control={
+                        <Switch
+                            checked={customSizing}
+                            onChange={(e, checked) => {
+                                setCustomSizing(checked);
+                            }}
+                        />
+                    }
+                    label="Use Custom Sizing"
+                /> */}
+                {customSizing ? (
+                    <Box></Box>
+                ) : (
+                    <Select
+                        onChange={({ target: { value } }) => {
+                            setCropRatio(value as number);
+                        }}
+                        value={cropRatio}
+                    >
+                        {sizeConfig.map(config => (
+                            <MenuItem defaultChecked value={config.width / config.height}>
+                                {config.displayName}
+                            </MenuItem>
+                        ))}
                     </Select>
-                }
+                )}
             </Box>
             <CropperContainer>
                 <Cropper
@@ -60,13 +74,21 @@ const Crop = () => {
                     minZoom={ZOOM_MIN}
                     maxZoom={ZOOM_MAX}
                     onZoomChange={zoom => {
-                        console.log("TCL🚀 ~ file: Crop.tsx ~ line 38 ~ Crop ~ zoom", zoom);
-                        setZoom(zoom)
+                        console.log('TCL🚀 ~ file: Crop.tsx ~ line 38 ~ Crop ~ zoom', zoom);
+                        setZoom(zoom);
                     }}
                     onCropComplete={onCropComplete}
                 />
             </CropperContainer>
-            <Slider min={ZOOM_MIN} max={ZOOM_MAX} step={0.05} value={zoom} onChange={(_, value) => { setZoom(+value) }} />
+            <Slider
+                min={ZOOM_MIN}
+                max={ZOOM_MAX}
+                step={0.05}
+                value={zoom}
+                onChange={(_, value) => {
+                    setZoom(+value);
+                }}
+            />
         </StyledPaper>
     );
 };
