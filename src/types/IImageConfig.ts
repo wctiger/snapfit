@@ -3,5 +3,6 @@ export interface IImageConfig {
     descripton?: string;
     height: number;
     width: number;
-    unit: 'cm' | 'inch' | 'px'; //...
+    unit: 'cm' | 'inch' | 'px';
+    backgroundColor?: string;
 }

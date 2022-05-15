@@ -11,13 +11,16 @@ export default function useImageCollate() {
     const photoPaperConfig = useRecoilValue(photoPaperStore);
 
     const [imageCollate, setImageCollate] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (uploadImage && cropArea && targetImageConfig && photoPaperConfig) {
+            setLoading(true);
             getCroppedImg(uploadImage as string, cropArea).then(croppedImage => {
                 if (croppedImage) {
                     const collate = generateCollate(croppedImage, targetImageConfig, photoPaperConfig);
                     setImageCollate(collate);
+                    setLoading(false);
                 }
             });
         }
@@ -27,10 +30,12 @@ export default function useImageCollate() {
         if (!imageCollate) {
             console.warn('no image is available');
         }
-        downloadImage(imageCollate, 'download.jpg');
+        const outputFile = `${targetImageConfig?.name}_${photoPaperConfig?.name}.jpg`;
+        downloadImage(imageCollate, outputFile);
     };
 
     return {
+        loading,
         photoPreview: imageCollate,
         downloadPrint,
     };

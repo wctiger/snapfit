@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Button, MenuItem, Paper, Select, SelectChangeEvent, Slider } from '@mui/material';
+import { Box, Button, MenuItem, Paper, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useEffect, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
@@ -45,6 +45,7 @@ const Crop = () => {
 
     return (
         <StyledPaper>
+            <Typography variant="h4">Crop</Typography>
             <Button
                 startIcon={<ReplayIcon />}
                 onClick={() => {
@@ -68,7 +69,7 @@ const Crop = () => {
                 {customSizing ? (
                     <Box></Box>
                 ) : (
-                    <Select onChange={onTargetImageChange} value={targetImage?.name ?? ''}>
+                    <Select size="small" onChange={onTargetImageChange} value={targetImage?.name ?? ''}>
                         {imageConfigArr.map(({ name, descripton }) => (
                             <MenuItem key={name} value={name}>
                                 {`${name} ${descripton ? '(' + descripton + ')' : ''}`}
@@ -98,6 +99,8 @@ const Crop = () => {
                 min={ZOOM_MIN}
                 max={ZOOM_MAX}
                 step={0.05}
+                valueLabelDisplay="auto"
+                valueLabelFormat={value => `${value}x`}
                 value={zoom}
                 onChange={(_, value) => {
                     setZoom(+value);

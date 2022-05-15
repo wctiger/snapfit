@@ -67,6 +67,9 @@ export function generateCollate(
         canvasOutput.height = photoPaperHeight;
     }
 
+    ctxOutput.fillStyle = photoPaperConfig.backgroundColor || 'white';
+    ctxOutput.fillRect(0, 0, canvasOutput.width, canvasOutput.height);
+
     for (const row of imagePositions) {
         for (const pos of row) {
             const { pos_x, pos_y } = pos;
@@ -97,7 +100,7 @@ function createImage(url: string) {
     });
 }
 
-const GUTTER = 2;
+const GUTTER = 5;
 function calculatePositions(
     paperWidth: number,
     paperHeight: number,
@@ -142,3 +145,5 @@ function calculatePositions(
         rotatePaper,
     };
 }
+
+function getWatermark() {}
