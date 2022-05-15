@@ -2,11 +2,11 @@ import { Paper, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { uploadImageStore } from '../../stores';
+import { readFile } from '../../utils';
 
 const Upload = () => {
     const setUploadImage = useSetRecoilState(uploadImageStore);
     const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        console.log('🚀 ~ file: Upload.tsx ~ line 16 ~ onFileChange ~ e', e);
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             let imageDataUrl = await readFile(file);
@@ -22,11 +22,3 @@ const Upload = () => {
 };
 
 export default Upload;
-
-function readFile(file: Blob) {
-    return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => resolve(reader.result), false);
-        reader.readAsDataURL(file);
-    });
-}

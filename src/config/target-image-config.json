@@ -1,4 +1,4 @@
 [
     { "name": "2.5 by 3.5 cm", "height": 3.5, "width": 2.5, "unit": "cm" },
-    { "name": "US Visa", "descripton": "2 * 2 inch", "height": 2, "width": 2, "unit": "inch" }
+    { "name": "US Visa", "descripton": "2 x 2 inch", "height": 2, "width": 2, "unit": "inch" }
 ]

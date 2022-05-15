@@ -1,5 +1,4 @@
 import { RecoilRoot } from 'recoil';
-import './App.css';
 import ContentFactory from './components/ContentFactory';
 import Theme from './components/Theme';
 

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Button, MenuItem, Paper, Select, SelectChangeEvent, Slider } from '@mui/material';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { useEffect, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -45,11 +46,12 @@ const Crop = () => {
     return (
         <StyledPaper>
             <Button
+                startIcon={<ReplayIcon />}
                 onClick={() => {
                     setUploadImage(null);
                 }}
             >
-                Reset Image
+                Pick another photo
             </Button>
             <Box>
                 {/* <FormControlLabel
@@ -87,7 +89,6 @@ const Crop = () => {
                     minZoom={ZOOM_MIN}
                     maxZoom={ZOOM_MAX}
                     onZoomChange={zoom => {
-                        console.log('TCL🚀 ~ file: Crop.tsx ~ line 38 ~ Crop ~ zoom', zoom);
                         setZoom(zoom);
                     }}
                     onCropComplete={onCropComplete}

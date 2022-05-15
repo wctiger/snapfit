@@ -1,15 +1,16 @@
 import styled from '@emotion/styled';
-import { MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import { Button, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { photoPaperStore, uploadImageStore } from '../../stores';
-import usePhoto from './hooks/usePhoto';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import photoPaperConfigArr from '../../config/photo-paper-config.json';
+import { photoPaperStore, uploadImageStore } from '../../stores';
+import useImageCollate from './hooks/useImageCollate';
 
 const Collate = () => {
     const uploadImage = useRecoilValue(uploadImageStore);
     const [photoPaper, setPhotoPaper] = useRecoilState(photoPaperStore);
-    const photoPreview = usePhoto();
+    const { photoPreview, downloadPrint } = useImageCollate();
 
     useEffect(() => {
         //@ts-ignore
@@ -43,6 +44,14 @@ const Collate = () => {
                             alt="image cut preview"
                         ></img>
                     </CollateContainer>
+                    <Button
+                        startIcon={<DownloadIcon />}
+                        onClick={() => {
+                            downloadPrint();
+                        }}
+                    >
+                        Download
+                    </Button>
                 </>
             )}
         </StyledPaper>
