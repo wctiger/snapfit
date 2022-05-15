@@ -1,28 +1,46 @@
 import styled from '@emotion/styled';
-import { Box, Button, FormControlLabel, MenuItem, Paper, Select, Slider, Switch } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { Box, Button, MenuItem, Paper, Select, SelectChangeEvent, Slider } from '@mui/material';
+import { useEffect, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { cropStore, uploadImageStore } from '../../stores';
-import { sizeConfig } from './sizeConfig';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import imageConfigArr from '../../config/target-image-config.json';
+import { cropStore, targetImageStore, uploadImageStore } from '../../stores';
+import { IImageConfig } from '../../types';
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
 
 const Crop = () => {
     const [uploadImage, setUploadImage] = useRecoilState(uploadImageStore);
+    const [targetImage, setTargetImage] = useRecoilState(targetImageStore);
     const setCrop = useSetRecoilState(cropStore);
+
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);
-
     const [customSizing, setCustomSizing] = useState(false);
+    const [cropRatio, setCropRatio] = useState(0);
 
-    const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
-        console.log(croppedArea, croppedAreaPixels);
+    useEffect(() => {
+        //@ts-ignore
+        const selectedConfig: IImageConfig = imageConfigArr[0];
+        const cropRatio = selectedConfig.width / selectedConfig.height;
+        setCropRatio(cropRatio);
+        setTargetImage(selectedConfig);
+    }, [imageConfigArr]);
+
+    const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
-    }, []);
+    };
 
-    const [cropRatio, setCropRatio] = useState(1); // TODO: dynamic
+    const onTargetImageChange = ({ target: { value } }: SelectChangeEvent) => {
+        //@ts-ignore
+        const selectedConfig: IImageConfig = imageConfigArr.find(config => config.name === value);
+        if (selectedConfig) {
+            const cropRatio = selectedConfig.width / selectedConfig.height;
+            setCropRatio(cropRatio);
+            setTargetImage(selectedConfig);
+        }
+    };
 
     return (
         <StyledPaper>
@@ -48,15 +66,10 @@ const Crop = () => {
                 {customSizing ? (
                     <Box></Box>
                 ) : (
-                    <Select
-                        onChange={({ target: { value } }) => {
-                            setCropRatio(value as number);
-                        }}
-                        value={cropRatio}
-                    >
-                        {sizeConfig.map(config => (
-                            <MenuItem defaultChecked value={config.width / config.height}>
-                                {config.displayName}
+                    <Select onChange={onTargetImageChange} value={targetImage?.name ?? ''}>
+                        {imageConfigArr.map(({ name, descripton }) => (
+                            <MenuItem key={name} value={name}>
+                                {`${name} ${descripton ? '(' + descripton + ')' : ''}`}
                             </MenuItem>
                         ))}
                     </Select>

@@ -1,34 +1,44 @@
 import { useEffect, useState } from 'react';
 import { Area } from 'react-easy-crop';
 import { useRecoilValue } from 'recoil';
-import { uploadImageStore, cropStore } from '../../../stores';
-import { inchToPx } from '../../crop/sizeConverter';
+import { cropStore, photoPaperStore, targetImageStore, uploadImageStore } from '../../../stores';
+import { IImageConfig } from '../../../types';
+import { cmToPx, inchToPx } from '../../crop/sizeConverter';
 
 export default function usePhoto() {
     const uploadImage = useRecoilValue(uploadImageStore);
     const cropArea = useRecoilValue(cropStore);
+    const targetImageConfig = useRecoilValue(targetImageStore);
+    const photoPaperConfig = useRecoilValue(photoPaperStore);
+
     const [photoBase64, setPhotoBase64] = useState('');
 
     useEffect(() => {
-        if (uploadImage && cropArea) {
-            getCroppedImg(uploadImage as string, cropArea).then(imageBase64 => {
+        if (uploadImage && cropArea && targetImageConfig && photoPaperConfig) {
+            getCroppedImg(uploadImage as string, cropArea, targetImageConfig, photoPaperConfig).then(imageBase64 => {
                 setPhotoBase64(imageBase64!);
             });
         }
-    }, [uploadImage, cropArea]);
+    }, [uploadImage, cropArea, targetImageConfig, photoPaperConfig]);
 
     return photoBase64;
 }
 
-const createImage = (url: string) =>
-    new Promise<HTMLImageElement>((resolve, reject) => {
+function createImage(url: string) {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
         const image = new Image();
         image.addEventListener('load', () => resolve(image));
         image.addEventListener('error', error => reject(error));
         image.src = url;
     });
+}
 
-async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
+async function getCroppedImg(
+    imageSrc: string,
+    pixelCrop: Area,
+    targetImageConfig: IImageConfig,
+    photoPaperConfig: IImageConfig
+) {
     const image = await createImage(imageSrc);
     const canvasPrimary = document.createElement('canvas');
     const ctx = canvasPrimary.getContext('2d');
@@ -36,6 +46,8 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     if (!ctx) {
         return null;
     }
+
+    // First: draw the cropped image in the original size
 
     // set canvas size to match the bounding box
     canvasPrimary.width = image.width;
@@ -56,22 +68,32 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
 
     const croppedImage = await createImage(canvasPrimary.toDataURL('image/jpeg'));
 
-    // testing
+    // Second: Take the cropped image and resize it.
     const canvasScaled = document.createElement('canvas');
     const ctxScaled = canvasScaled.getContext('2d');
+    if (!ctxScaled) return null;
 
-    ctxScaled?.drawImage(croppedImage, 0, 0, inchToPx(0.6), inchToPx(1));
-    const scaledData = ctxScaled!.getImageData(0, 0, inchToPx(0.6), inchToPx(1));
+    const [targetWidth, targetHeight] = getImageInPx(targetImageConfig);
+    const [photoPaperWidth, photoPaperHeight] = getImageInPx(photoPaperConfig);
 
-    const { imagePositions, rotatePaper } = calculatePositions(inchToPx(6), inchToPx(4), inchToPx(0.6), inchToPx(1));
+    ctxScaled.drawImage(croppedImage, 0, 0, targetWidth, targetHeight);
+    const scaledData = ctxScaled.getImageData(0, 0, targetWidth, targetHeight);
+
+    const { imagePositions, rotatePaper } = calculatePositions(
+        photoPaperWidth,
+        photoPaperHeight,
+        targetWidth,
+        targetHeight
+    );
+
     if (rotatePaper) {
         // testing. Remember this is screen DPI - need to change to use print DPI.
-        canvasPrimary.width = inchToPx(4);
-        canvasPrimary.height = inchToPx(6);
+        canvasPrimary.width = photoPaperHeight;
+        canvasPrimary.height = photoPaperWidth;
     } else {
         // testing. Remember this is screen DPI - need to change to use print DPI.
-        canvasPrimary.width = inchToPx(6);
-        canvasPrimary.height = inchToPx(4);
+        canvasPrimary.width = photoPaperWidth;
+        canvasPrimary.height = photoPaperHeight;
     }
 
     for (const row of imagePositions) {
@@ -83,6 +105,17 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
 
     // As Base64 string
     return canvasPrimary.toDataURL('image/jpeg');
+}
+
+function getImageInPx(imageConfig: IImageConfig) {
+    switch (imageConfig.unit) {
+        case 'cm':
+            return [cmToPx(imageConfig.width), cmToPx(imageConfig.height)];
+        case 'inch':
+            return [inchToPx(imageConfig.width), inchToPx(imageConfig.height)];
+        default:
+            return [imageConfig.width, imageConfig.height];
+    }
 }
 
 const GAP = 5; // temp, set gap to 5px
