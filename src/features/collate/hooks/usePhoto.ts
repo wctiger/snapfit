@@ -30,45 +30,59 @@ const createImage = (url: string) =>
 
 async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     const image = await createImage(imageSrc);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvasPrimary = document.createElement('canvas');
+    const ctx = canvasPrimary.getContext('2d');
 
     if (!ctx) {
         return null;
     }
 
     // set canvas size to match the bounding box
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvasPrimary.width = image.width;
+    canvasPrimary.height = image.height;
 
-    // draw rotated image
     ctx.drawImage(image, 0, 0);
 
     // croppedAreaPixels values are bounding box relative
     // extract the cropped image using these values
     const data = ctx.getImageData(pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height);
 
+    // set canvas width to final desired crop size - this will clear existing context
+    canvasPrimary.width = pixelCrop.width;
+    canvasPrimary.height = pixelCrop.height;
+
+    // paste generated rotate image at the top left corner
+    ctx.putImageData(data, 0, 0);
+
+    const croppedImage = await createImage(canvasPrimary.toDataURL('image/jpeg'));
+
     // testing
-    const imagePositions = calculatePositions(inchToPx(6), inchToPx(4), inchToPx(0.6), inchToPx(1));
+    const canvasScaled = document.createElement('canvas');
+    const ctxScaled = canvasScaled.getContext('2d');
 
-    // // // set canvas width to final desired crop size - this will clear existing context
-    // canvas.width = pixelCrop.width;
-    // canvas.height = pixelCrop.height;
+    ctxScaled?.drawImage(croppedImage, 0, 0, inchToPx(0.6), inchToPx(1));
+    const scaledData = ctxScaled!.getImageData(0, 0, inchToPx(0.6), inchToPx(1));
 
-    // testing. Remember this is screen DPI - need to change to use pring DPI.
-    canvas.width = inchToPx(6);
-    canvas.height = inchToPx(4);
-    // // // paste generated rotate image at the top left corner
-    // ctx.putImageData(data, 0, 0);
+    const { imagePositions, rotatePaper } = calculatePositions(inchToPx(6), inchToPx(4), inchToPx(0.6), inchToPx(1));
+    if (rotatePaper) {
+        // testing. Remember this is screen DPI - need to change to use print DPI.
+        canvasPrimary.width = inchToPx(4);
+        canvasPrimary.height = inchToPx(6);
+    } else {
+        // testing. Remember this is screen DPI - need to change to use print DPI.
+        canvasPrimary.width = inchToPx(6);
+        canvasPrimary.height = inchToPx(4);
+    }
+
     for (const row of imagePositions) {
         for (const pos of row) {
             const { pos_x, pos_y } = pos;
-            ctx.putImageData(data, pos_x, pos_y);
+            ctx.putImageData(scaledData, pos_x, pos_y);
         }
     }
 
     // As Base64 string
-    return canvas.toDataURL('image/jpeg');
+    return canvasPrimary.toDataURL('image/jpeg');
 }
 
 const GAP = 5; // temp, set gap to 5px
@@ -79,12 +93,10 @@ function calculatePositions(
     singlePhotoWidth: number,
     singlePhotoHeight: number
 ) {
+    let rotatePaper = false;
     const columnCount = Math.floor(paperWidth / (singlePhotoWidth + GAP));
-
     const rowCount = Math.floor(paperHeight / (singlePhotoHeight + GAP));
-
     const rotateColumnCount = Math.floor(paperHeight / (singlePhotoWidth + GAP));
-
     const rotateRowCount = Math.floor(paperWidth / (singlePhotoHeight + GAP));
 
     let bestColumnCount = columnCount;
@@ -94,6 +106,7 @@ function calculatePositions(
 
     // Rotate to get better print efficiency
     if (rotateColumnCount * rotateRowCount > columnCount * rowCount) {
+        rotatePaper = true;
         bestColumnCount = rotateColumnCount;
         bestRowCount = rotateRowCount;
         horizontalStartPoint = (paperHeight - bestColumnCount * (singlePhotoWidth + GAP) + GAP) / 2;
@@ -113,5 +126,8 @@ function calculatePositions(
         }
     }
 
-    return posArr;
+    return {
+        imagePositions: posArr,
+        rotatePaper,
+    };
 }
