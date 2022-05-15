@@ -14,10 +14,10 @@ const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
             <TopBar />
             <Container maxWidth="lg">
                 <Grid container spacing={1}>
-                    <Grid item xs={12} sm={6} style={{ height: '80vh' }}>
+                    <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
                         {leftComp}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
                         {rightComp}
                     </Grid>
                 </Grid>

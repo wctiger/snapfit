@@ -1,46 +1,100 @@
 import styled from '@emotion/styled';
-import { Paper, Typography } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
-import { cropStore, uploadImageStore } from '../../stores';
+import DownloadIcon from '@mui/icons-material/Download';
+import {
+    Button,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import photoPaperConfigArr from '../../config/photo-paper-config.json';
+import { photoPaperStore, uploadImageStore } from '../../stores';
+import useImageCollate from './hooks/useImageCollate';
 
 const Collate = () => {
     const uploadImage = useRecoilValue(uploadImageStore);
-    const cropArea = useRecoilValue(cropStore);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    
+    const [photoPaper, setPhotoPaper] = useRecoilState(photoPaperStore);
+    const { loading, photoPreview, downloadPrint } = useImageCollate();
+
+    const [backgroundColor, setBackgroundColor] = useState('#fff');
+
     useEffect(() => {
-        const ctx = canvasRef.current?.getContext('2d');
-        if (uploadImage && cropArea && canvasRef.current) {
-            const image = new Image();
-            image.onload = () => {
-                console.log(cropArea);
-                const ratio = image.height / image.width;
-                const croppedImageWidth = image.width * cropArea.width / 100;
-                const cropppedImageHeight = image.height * cropArea.height / 100;
+        //@ts-ignore
+        setPhotoPaper({ ...photoPaperConfigArr[0], backgroundColor });
+    }, []);
 
-                const canvasWidth = 200;
-                const canvasHeight = canvasWidth * ratio;
-
-                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 0, 0, canvasWidth, canvasHeight);
-                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 200, 0, canvasWidth, canvasHeight);
-                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 0, canvasHeight, canvasWidth, canvasHeight);
-                ctx?.drawImage(image, cropArea.x, cropArea.y, croppedImageWidth, cropppedImageHeight, 200, canvasHeight, canvasWidth, canvasHeight);
-                // ctx?.drawImage(image, 0, 0, image.width, image.height, 0, 0, 100, 75)
-            };
-            image.src = uploadImage as string;
+    const onPhotoPaperChange = ({ target: { value } }: SelectChangeEvent) => {
+        //@ts-ignore
+        const selectedConfig: IImageConfig = photoPaperConfigArr.find(config => config.name === value);
+        if (selectedConfig) {
+            setPhotoPaper({ ...selectedConfig, backgroundColor });
         }
-    }, [uploadImage, cropArea]);
+    };
 
     return (
         //@ts-ignore
         <StyledPaper>
-            <Typography variant="h3">Image Preview</Typography>
-            {uploadImage && (
-                <CollateContainer>
-                    <canvas ref={canvasRef} width={450} height={330}></canvas>
-                </CollateContainer>
-            )}
+            <Typography variant="h4">Image Preview</Typography>
+
+            {uploadImage &&
+                (!loading ? (
+                    <>
+                        <ControlBar>
+                            <Select
+                                size="small"
+                                style={{ width: '45%' }}
+                                value={photoPaper?.name ?? ''}
+                                onChange={onPhotoPaperChange}
+                            >
+                                {photoPaperConfigArr.map(({ name, unit }) => (
+                                    <MenuItem key={name} value={name}>{`${name} ${unit}`}</MenuItem>
+                                ))}
+                            </Select>
+
+                            <ToggleButtonGroup
+                                size="small"
+                                exclusive
+                                value={backgroundColor}
+                                onChange={(_, value) => {
+                                    setBackgroundColor(value);
+                                    setPhotoPaper({ ...photoPaper!, backgroundColor: value });
+                                }}
+                            >
+                                <ToggleButton style={{ color: '#fff' }} value={'#fff'}>
+                                    White
+                                </ToggleButton>
+                                <ToggleButton style={{ color: 'blue' }} value={'blue'}>
+                                    Blue
+                                </ToggleButton>
+                                <ToggleButton style={{ color: '#333' }} value={'#333'}>
+                                    Gray
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                        </ControlBar>
+                        <CollateContainer>
+                            <img
+                                style={{ maxWidth: '100%', maxHeight: '70vh' }}
+                                src={photoPreview}
+                                alt="image cut preview"
+                            ></img>
+                        </CollateContainer>
+                        <Button
+                            startIcon={<DownloadIcon />}
+                            onClick={() => {
+                                downloadPrint();
+                            }}
+                        >
+                            Download
+                        </Button>
+                    </>
+                ) : (
+                    <Paper>Loading...</Paper>
+                ))}
         </StyledPaper>
     );
 };
@@ -53,6 +107,12 @@ const StyledPaper = styled(Paper)`
     flex-direction: column;
 `;
 
+const ControlBar = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
 const CollateContainer = styled.div`
     flex: 1;
+    text-align: center;
 `;
