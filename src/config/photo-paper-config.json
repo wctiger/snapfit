@@ -2,5 +2,18 @@
     { "name": "4 x 6", "width": 6, "height": 4, "unit": "inch" },
     { "name": "4 x 4", "width": 4, "height": 4, "unit": "inch" },
     { "name": "5 x 7", "width": 7, "height": 5, "unit": "inch" },
-    { "name": "12 x 15", "width": 15, "height": 12, "unit": "cm" }
+    { "name": "12 x 15", "width": 15, "height": 12, "unit": "cm" },
+    { "name": "5寸(3R)", "width": 12.7, "height": 8.9, "unit": "cm" },
+    { "name": "6寸(4R)", "width": 15.2, "height": 10.2, "unit": "cm" },
+    { "name": "7寸(5R)", "width": 17.8, "height": 12.7, "unit": "cm" },
+    { "name": "8寸(6R)", "width": 20.3, "height": 15.2, "unit": "cm" },
+    { "name": "10寸(8R)", "width": 25.4, "height": 20.3, "unit": "cm" },
+    { "name": "12寸", "width": 25.4, "height": 30.48, "unit": "cm" },
+    { "name": "Letter", "width": 21.59, "height": 27.94, "unit": "cm" },
+    { "name": "A3", "width": 29.7, "height": 42, "unit": "cm" },
+    { "name": "A4", "width": 21, "height": 29.7, "unit": "cm" },
+    { "name": "A5", "width": 14.8, "height": 21, "unit": "cm" },
+    { "name": "B3", "width": 50, "height": 70.7, "unit": "cm" },
+    { "name": "B4", "width": 25, "height": 35.3, "unit": "cm" },
+    { "name": "B5", "width": 17.6, "height": 25, "unit": "cm" }
 ]
