@@ -1,5 +1,7 @@
-import { Container, Grid } from '@mui/material';
+import { Container, Grid, useTheme } from '@mui/material';
 import { FC, ReactNode } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { themeStore } from '../../stores';
 import Footer from './Footer';
 import TopBar from './TopBar';
 
@@ -9,20 +11,25 @@ interface ILayoutProps {
 }
 
 const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
+    const themeKey = useRecoilValue(themeStore);
+    const isDarkMode = themeKey === 'dark';
+
     return (
         <>
             <TopBar />
-            <Container maxWidth="lg">
-                <Grid container spacing={1}>
-                    <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
-                        {leftComp}
+            <div style={{ backgroundColor: isDarkMode ? '#212121' : '#f5f5f5' }}>
+                <Container maxWidth="lg">
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
+                            {leftComp}
+                        </Grid>
+                        <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
+                            {rightComp}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
-                        {rightComp}
-                    </Grid>
-                </Grid>
-                <Footer></Footer>
-            </Container>
+                    <Footer></Footer>
+                </Container>
+            </div>
         </>
     );
 };

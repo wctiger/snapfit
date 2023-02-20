@@ -39,7 +39,7 @@ const Collate = () => {
     return (
         //@ts-ignore
         <StyledPaper>
-            <Typography variant="h4">Image Preview</Typography>
+            <Typography variant="h4">Print Preview</Typography>
 
             {uploadImage &&
                 (!loading ? (

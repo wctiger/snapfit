@@ -16,7 +16,7 @@ export default function useImageCollate() {
     useEffect(() => {
         if (uploadImage && cropArea && targetImageConfig && photoPaperConfig) {
             setLoading(true);
-            getCroppedImg(uploadImage as string, cropArea).then(croppedImage => {
+            getCroppedImg(uploadImage as string, cropArea).then(({ croppedImage }) => {
                 if (croppedImage) {
                     const collate = generateCollate(croppedImage, targetImageConfig, photoPaperConfig);
                     setImageCollate(collate);

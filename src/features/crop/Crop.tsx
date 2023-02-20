@@ -1,17 +1,21 @@
 import styled from '@emotion/styled';
-import { Box, Button, MenuItem, Paper, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
+import { Box, Button, debounce, MenuItem, Paper, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import imageConfigArr from '../../config/target-image-config.json';
 import { cropStore, targetImageStore, uploadImageStore } from '../../stores';
 import { IImageConfig } from '../../types';
+import DownloadIcon from '@mui/icons-material/Download';
+import { getCroppedImg } from '../collate/hooks/imageHelpers';
+import { downloadImage } from '../../utils';
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
 
 const Crop = () => {
+    const croppedImageRaw = useRef<string>('');
     const [uploadImage, setUploadImage] = useRecoilState(uploadImageStore);
     const [targetImage, setTargetImage] = useRecoilState(targetImageStore);
     const setCrop = useSetRecoilState(cropStore);
@@ -31,6 +35,13 @@ const Crop = () => {
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
+        if (uploadImage) {
+            getCroppedImg(uploadImage, croppedAreaPixels).then(({ rawImageUrl }) => {
+                if (rawImageUrl) {
+                    croppedImageRaw.current = rawImageUrl;
+                }
+            });
+        }
     };
 
     const onTargetImageChange = ({ target: { value } }: SelectChangeEvent) => {
@@ -45,15 +56,28 @@ const Crop = () => {
 
     return (
         <StyledPaper>
-            <Typography variant="h4">Crop</Typography>
-            <Button
-                startIcon={<ReplayIcon />}
-                onClick={() => {
-                    setUploadImage(null);
-                }}
-            >
-                Pick another photo
-            </Button>
+            {/* <Typography variant="h4">Crop</Typography> */}
+            <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
+                <Button
+                    startIcon={<DownloadIcon />}
+                    onClick={() => {
+                        if (croppedImageRaw.current) {
+                            const outputFile = `${targetImage?.name}_crop_preview.jpg`;
+                            downloadImage(croppedImageRaw.current, outputFile);
+                        }
+                    }}
+                >
+                    Preview Cropped Image
+                </Button>
+                <Button
+                    startIcon={<ReplayIcon />}
+                    onClick={() => {
+                        setUploadImage(null);
+                    }}
+                >
+                    Pick another photo
+                </Button>
+            </Box>
             <Box>
                 {/* <FormControlLabel
                     control={
@@ -69,7 +93,12 @@ const Crop = () => {
                 {customSizing ? (
                     <Box></Box>
                 ) : (
-                    <Select size="small" onChange={onTargetImageChange} value={targetImage?.name ?? ''}>
+                    <Select
+                        style={{ width: '100%' }}
+                        size="small"
+                        onChange={onTargetImageChange}
+                        value={targetImage?.name ?? ''}
+                    >
                         {imageConfigArr.map(({ name, descripton }) => (
                             <MenuItem key={name} value={name}>
                                 {`${name} ${descripton ? '(' + descripton + ')' : ''}`}

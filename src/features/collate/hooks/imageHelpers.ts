@@ -7,7 +7,7 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-        return null;
+        return {};
     }
 
     // set canvas size to match the original image
@@ -26,8 +26,9 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     // paste generated rotate image at the top left corner
     ctx.putImageData(data, 0, 0);
 
-    const croppedImage = await createImage(canvas.toDataURL('image/jpeg'));
-    return croppedImage;
+    const rawImageUrl = canvas.toDataURL('image/jpeg');
+    const croppedImage = await createImage(rawImageUrl);
+    return { croppedImage, rawImageUrl };
 }
 
 export function generateCollate(

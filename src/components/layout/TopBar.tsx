@@ -19,7 +19,7 @@ export default function TopBar() {
                         <ContentCutIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        I CUT!
+                        SNAPFIT
                     </Typography>
                     <IconButton
                         sx={{ ml: 1 }}
