@@ -5,10 +5,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import imageConfigArr from '../../config/target-image-config.json';
-import { cropStore, targetImageStore, uploadImageStore } from '../../stores';
+import { cropStore, photoPaperStore, targetImageStore, uploadImageStore } from '../../stores';
 import { IImageConfig } from '../../types';
 import DownloadIcon from '@mui/icons-material/Download';
-import { getCroppedImg } from '../collate/hooks/imageHelpers';
+import { getCroppedImg } from '../core/imageHelpers';
 import { downloadImage } from '../../utils';
 
 const ZOOM_MIN = 1;
@@ -19,6 +19,7 @@ const Crop = () => {
     const [uploadImage, setUploadImage] = useRecoilState(uploadImageStore);
     const [targetImage, setTargetImage] = useRecoilState(targetImageStore);
     const setCrop = useSetRecoilState(cropStore);
+    const setPhotoPaper = useSetRecoilState(photoPaperStore);
 
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);
@@ -73,6 +74,9 @@ const Crop = () => {
                     startIcon={<ReplayIcon />}
                     onClick={() => {
                         setUploadImage(null);
+                        setCrop(null);
+                        setTargetImage(null);
+                        setPhotoPaper(null);
                     }}
                 >
                     Pick another photo

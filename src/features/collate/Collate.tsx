@@ -26,7 +26,7 @@ const Collate = () => {
     const [backgroundColor, setBackgroundColor] = useState('#fff');
 
     useEffect(() => {
-        //@ts-ignore
+        // @ts-ignore
         setPhotoPaper({ ...photoPaperConfigArr[0], backgroundColor });
     }, []);
 
