@@ -8,7 +8,7 @@
 
 > Inspired by [https://github.com/gmajian/sandphoto]
 
-### 🏠 [Homepage](https://wctiger.github.io/cut-a-photo/)
+### 🏠 [Homepage](https://wctiger.github.io/snapfit/)
 
 ## Install
 
