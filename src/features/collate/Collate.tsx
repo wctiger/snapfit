@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import DownloadIcon from '@mui/icons-material/Download';
 import {
     Button,
+    CircularProgress,
+    Grid,
     MenuItem,
     Paper,
     Select,
@@ -39,8 +41,6 @@ const Collate = () => {
     return (
         //@ts-ignore
         <StyledPaper>
-            <Typography variant="h4">Print Preview</Typography>
-
             {uploadImage &&
                 (!loading ? (
                     <>
@@ -84,16 +84,25 @@ const Collate = () => {
                             ></img>
                         </CollateContainer>
                         <Button
+                            variant="contained"
+                            color="success"
                             startIcon={<DownloadIcon />}
                             onClick={() => {
                                 downloadPrint();
                             }}
                         >
-                            Download
+                            Download Print
                         </Button>
                     </>
                 ) : (
-                    <Paper>Loading...</Paper>
+                    <Grid container spacing={2} alignItems="center" justifyContent="center" height={'100%'}>
+                        <Grid item textAlign="center">
+                            {/* TODO: Optimize this process by using a worker to do the heavy image processing so this
+                            loading animation can work */}
+                            {/* <CircularProgress size={48} color="success" /> */}
+                            <Typography variant="h4">Loading...</Typography>
+                        </Grid>
+                    </Grid>
                 ))}
         </StyledPaper>
     );
@@ -115,4 +124,5 @@ const ControlBar = styled.div`
 const CollateContainer = styled.div`
     flex: 1;
     text-align: center;
+    margin: 5px 0;
 `;

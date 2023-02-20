@@ -2,5 +2,5 @@ import { atom } from 'recoil';
 
 export const themeStore = atom<'light' | 'dark'>({
     key: 'themeStore',
-    default: 'dark',
+    default: 'light',
 });
