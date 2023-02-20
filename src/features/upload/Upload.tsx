@@ -10,7 +10,7 @@ const Upload = () => {
         // TODO: verify file type
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            let imageDataUrl = await readFile(file);
+            let imageDataUrl = (await readFile(file)) + '';
             setUploadImage(imageDataUrl);
         }
     };
