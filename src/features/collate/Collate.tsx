@@ -41,8 +41,10 @@ const Collate = () => {
     return (
         //@ts-ignore
         <StyledPaper>
-            {uploadImage &&
-                (!loading ? (
+            {
+                uploadImage && (
+                    // (loading ? (
+                    // (!loading ? (
                     <>
                         <ControlBar>
                             <Select
@@ -77,11 +79,12 @@ const Collate = () => {
                             </ToggleButtonGroup>
                         </ControlBar>
                         <CollateContainer>
-                            <img
+                            <canvas style={{ maxWidth: '100%', maxHeight: '70vh' }} id="collate-canvas"></canvas>
+                            {/* <img
                                 style={{ maxWidth: '100%', maxHeight: '70vh' }}
                                 src={photoPreview}
                                 alt="image cut preview"
-                            ></img>
+                            ></img> */}
                         </CollateContainer>
                         <Button
                             variant="contained"
@@ -94,16 +97,18 @@ const Collate = () => {
                             Download Print
                         </Button>
                     </>
-                ) : (
-                    <Grid container spacing={2} alignItems="center" justifyContent="center" height={'100%'}>
-                        <Grid item textAlign="center">
-                            {/* TODO: Optimize this process by using a worker to do the heavy image processing so this
-                            loading animation can work */}
-                            {/* <CircularProgress size={48} color="success" /> */}
-                            <Typography variant="h4">Loading...</Typography>
-                        </Grid>
-                    </Grid>
-                ))}
+                )
+                // ) : (
+                //     <Grid container spacing={2} alignItems="center" justifyContent="center" height={'100%'}>
+                //         <Grid item textAlign="center">
+                //             {/* TODO: Optimize this process by using a worker to do the heavy image processing so this
+                //             loading animation can work */}
+                //             {/* <CircularProgress size={48} color="success" /> */}
+                //             <Typography variant="h4">Loading...</Typography>
+                //         </Grid>
+                //     </Grid>
+                // ))}
+            }
         </StyledPaper>
     );
 };

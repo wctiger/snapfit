@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { cropStore, photoPaperStore, targetImageStore, uploadImageStore } from '../../../stores';
 import { downloadImage } from '../../../utils';
-import { generateCollate, getCroppedImg } from './imageHelpers';
+import { generateCollate, getCroppedImg } from '../../../core/imageHelpers';
 
 export default function useImageCollate() {
     const uploadImage = useRecoilValue(uploadImageStore);

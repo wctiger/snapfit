@@ -8,7 +8,7 @@ import imageConfigArr from '../../config/target-image-config.json';
 import { cropStore, targetImageStore, uploadImageStore } from '../../stores';
 import { IImageConfig } from '../../types';
 import DownloadIcon from '@mui/icons-material/Download';
-import { getCroppedImg } from '../collate/hooks/imageHelpers';
+import { getCroppedImg } from '../../core/imageHelpers';
 import { downloadImage } from '../../utils';
 
 const ZOOM_MIN = 1;
