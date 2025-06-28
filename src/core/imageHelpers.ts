@@ -43,7 +43,7 @@ export function generateCollate(
     const canvasOutput = document.getElementById('collate-canvas') as HTMLCanvasElement;
     // const canvasOutput = document.createElement('canvas');
     if (!offscreen) {
-        offscreen = canvasOutput.transferControlToOffscreen();
+        offscreen = (canvasOutput as any).transferControlToOffscreen();
     }
 
     const [targetWidth, targetHeight] = getImageInPx(targetImageConfig);
@@ -69,7 +69,7 @@ export function generateCollate(
             photoPaperHeight,
             backgroundColor: photoPaperConfig.backgroundColor,
         },
-        [offscreen] // transfer ownership of the offscreen canvas
+        [offscreen as unknown as Transferable] // transfer ownership of the offscreen canvas
     );
     // const ctxOutput = canvasOutput.getContext('2d');
     // if (!ctxOutput) return '';

@@ -13,14 +13,12 @@ import {
     Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useStore } from '../../stores/store';
 import photoPaperConfigArr from '../../config/photo-paper-config.json';
-import { photoPaperStore, uploadImageStore } from '../../stores';
 import useImageCollate from './hooks/useImageCollate';
 
 const Collate = () => {
-    const uploadImage = useRecoilValue(uploadImageStore);
-    const [photoPaper, setPhotoPaper] = useRecoilState(photoPaperStore);
+    const { uploadImage, photoPaper, setPhotoPaper } = useStore();
     const { loading, photoPreview, downloadPrint } = useImageCollate();
 
     const [backgroundColor, setBackgroundColor] = useState('#fff');

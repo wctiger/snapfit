@@ -3,9 +3,8 @@ import { Box, Button, debounce, MenuItem, Paper, Select, SelectChangeEvent, Slid
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useStore } from '../../stores/store';
 import imageConfigArr from '../../config/target-image-config.json';
-import { cropStore, targetImageStore, uploadImageStore } from '../../stores';
 import { IImageConfig } from '../../types';
 import DownloadIcon from '@mui/icons-material/Download';
 import { getCroppedImg } from '../../core/imageHelpers';
@@ -16,9 +15,7 @@ const ZOOM_MAX = 3;
 
 const Crop = () => {
     const croppedImageRaw = useRef<string>('');
-    const [uploadImage, setUploadImage] = useRecoilState(uploadImageStore);
-    const [targetImage, setTargetImage] = useRecoilState(targetImageStore);
-    const setCrop = useSetRecoilState(cropStore);
+    const { uploadImage, setUploadImage, targetImage, setTargetImage, setCrop } = useStore();
 
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);

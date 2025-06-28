@@ -19,7 +19,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-easy-crop": "^4.2.0",
-    "recoil": "^0.7.3-alpha.1"
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

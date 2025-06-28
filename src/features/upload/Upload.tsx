@@ -1,13 +1,12 @@
 import { Camera, CameraAlt } from '@mui/icons-material';
 import { Button, Grid, Paper, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useStore } from '../../stores/store';
 import StyledPaper from '../../components/StyledPaper';
-import { uploadImageStore } from '../../stores';
 import { readFile } from '../../utils';
 
 const Upload = () => {
-    const setUploadImage = useSetRecoilState(uploadImageStore);
+    const setUploadImage = useStore(state => state.setUploadImage);
     const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         // TODO: verify file type
         if (e.target.files && e.target.files.length > 0) {

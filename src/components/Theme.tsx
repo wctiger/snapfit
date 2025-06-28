@@ -1,12 +1,11 @@
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
 import { FC, ReactNode } from 'react';
-import { useRecoilValue } from 'recoil';
-import { themeStore } from '../stores';
+import { useStore } from '../stores/store';
 
 const Theme: FC<{ children: ReactNode }> = props => {
     // TODO: listen to system theme change
-    const themeKey = useRecoilValue(themeStore);
+    const themeKey = useStore(state => state.theme);
     const getTheme = (mode: 'light' | 'dark' = 'light') => {
         return createTheme({
             palette: {

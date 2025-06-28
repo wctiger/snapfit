@@ -6,11 +6,10 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useRecoilState } from 'recoil';
-import { themeStore } from '../../stores';
+import { useStore } from '../../stores/store';
 
 export default function TopBar() {
-    const [themeKey, setThemeKey] = useRecoilState(themeStore);
+    const { theme, setTheme } = useStore();
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -24,12 +23,12 @@ export default function TopBar() {
                     <IconButton
                         sx={{ ml: 1 }}
                         onClick={() => {
-                            const nextKey = themeKey === 'dark' ? 'light' : 'dark';
-                            setThemeKey(nextKey);
+                            const nextKey = theme === 'dark' ? 'light' : 'dark';
+                            setTheme(nextKey);
                         }}
                         color="inherit"
                     >
-                        {themeKey === 'dark' ? <Brightness7 /> : <Brightness4 />}
+                        {theme === 'dark' ? <Brightness7 /> : <Brightness4 />}
                     </IconButton>
                 </Toolbar>
             </AppBar>

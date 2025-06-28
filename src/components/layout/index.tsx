@@ -1,7 +1,6 @@
 import { Container, Grid, useTheme } from '@mui/material';
 import { FC, ReactNode } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { themeStore } from '../../stores';
+import { useStore } from '../../stores/store';
 import Footer from './Footer';
 import TopBar from './TopBar';
 
@@ -11,7 +10,7 @@ interface ILayoutProps {
 }
 
 const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
-    const themeKey = useRecoilValue(themeStore);
+    const themeKey = useStore(state => state.theme);
     const isDarkMode = themeKey === 'dark';
 
     return (

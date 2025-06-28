@@ -1,36 +1,32 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { cropStore, photoPaperStore, targetImageStore, uploadImageStore } from '../../../stores';
+import { useStore } from '../../../stores/store';
 import { downloadImage } from '../../../utils';
 import { generateCollate, getCroppedImg } from '../../../core/imageHelpers';
 
 export default function useImageCollate() {
-    const uploadImage = useRecoilValue(uploadImageStore);
-    const cropArea = useRecoilValue(cropStore);
-    const targetImageConfig = useRecoilValue(targetImageStore);
-    const photoPaperConfig = useRecoilValue(photoPaperStore);
+    const { uploadImage, crop, targetImage, photoPaper } = useStore();
 
     const [imageCollate, setImageCollate] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (uploadImage && cropArea && targetImageConfig && photoPaperConfig) {
+        if (uploadImage && crop && targetImage && photoPaper) {
             setLoading(true);
-            getCroppedImg(uploadImage as string, cropArea).then(({ croppedImage }) => {
+            getCroppedImg(uploadImage as string, crop).then(({ croppedImage }) => {
                 if (croppedImage) {
-                    const collate = generateCollate(croppedImage, targetImageConfig, photoPaperConfig);
+                    const collate = generateCollate(croppedImage, targetImage, photoPaper);
                     setImageCollate(collate);
                     setLoading(false);
                 }
             });
         }
-    }, [uploadImage, cropArea, targetImageConfig, photoPaperConfig]);
+    }, [uploadImage, crop, targetImage, photoPaper]);
 
     const downloadPrint = () => {
         if (!imageCollate) {
             console.warn('no image is available');
         }
-        const outputFile = `${targetImageConfig?.name}_${photoPaperConfig?.name}.jpg`;
+        const outputFile = `${targetImage?.name}_${photoPaper?.name}.jpg`;
         downloadImage(imageCollate, outputFile);
     };
 
