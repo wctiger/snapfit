@@ -1,12 +1,11 @@
-import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
 
-const StyledPaper = styled(Paper)`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
+const StyledPaper = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(2),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+}));
 
 export default StyledPaper;

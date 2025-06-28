@@ -1,8 +1,5 @@
-import { Container, Box, useTheme } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { FC, ReactNode } from 'react';
-import { useStore } from '../../stores/store';
-import Footer from './Footer';
-import TopBar from './TopBar';
 
 interface ILayoutProps {
     leftComp: ReactNode;
@@ -10,26 +7,17 @@ interface ILayoutProps {
 }
 
 const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
-    const themeKey = useStore(state => state.theme);
-    const isDarkMode = themeKey === 'dark';
-
     return (
-        <>
-            <TopBar />
-            <div style={{ backgroundColor: isDarkMode ? '#212121' : '#f5f5f5' }}>
-                <Container maxWidth="lg">
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 4px)' }, height: '85vh' }}>
-                            {leftComp}
-                        </Box>
-                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 4px)' }, height: '85vh' }}>
-                            {rightComp}
-                        </Box>
-                    </Box>
-                    <Footer></Footer>
-                </Container>
-            </div>
-        </>
+        <Container maxWidth="lg" sx={{ my: 3 }}>
+            <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 12px)' }, minHeight: '80vh' }}>
+                    {leftComp}
+                </Box>
+                <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 12px)' }, minHeight: '80vh' }}>
+                    {rightComp}
+                </Box>
+            </Box>
+        </Container>
     );
 };
 

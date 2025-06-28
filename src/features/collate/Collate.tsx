@@ -1,21 +1,19 @@
-import styled from '@emotion/styled';
 import DownloadIcon from '@mui/icons-material/Download';
 import {
     Button,
-    CircularProgress,
-    Grid,
     MenuItem,
-    Paper,
     Select,
     SelectChangeEvent,
     ToggleButton,
     ToggleButtonGroup,
     Typography,
+    Box,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useStore } from '../../stores/store';
 import photoPaperConfigArr from '../../config/photo-paper-config.json';
 import useImageCollate from './hooks/useImageCollate';
+import StyledPaper from '../../components/StyledPaper';
 
 const Collate = () => {
     const { uploadImage, photoPaper, setPhotoPaper } = useStore();
@@ -37,95 +35,57 @@ const Collate = () => {
     };
 
     return (
-        //@ts-ignore
         <StyledPaper>
-            {
-                uploadImage && (
-                    // (loading ? (
-                    // (!loading ? (
-                    <>
-                        <ControlBar>
-                            <Select
-                                size="small"
-                                style={{ width: '45%' }}
-                                value={photoPaper?.name ?? ''}
-                                onChange={onPhotoPaperChange}
-                            >
-                                {photoPaperConfigArr.map(({ name, unit }) => (
-                                    <MenuItem key={name} value={name}>{`${name} ${unit}`}</MenuItem>
-                                ))}
-                            </Select>
-
-                            <ToggleButtonGroup
-                                size="small"
-                                exclusive
-                                value={backgroundColor}
-                                onChange={(_, value) => {
-                                    setBackgroundColor(value);
-                                    setPhotoPaper({ ...photoPaper!, backgroundColor: value });
-                                }}
-                            >
-                                <ToggleButton style={{ color: '#fff' }} value={'#fff'}>
-                                    White
-                                </ToggleButton>
-                                <ToggleButton style={{ color: 'blue' }} value={'blue'}>
-                                    Blue
-                                </ToggleButton>
-                                <ToggleButton style={{ color: '#333' }} value={'#333'}>
-                                    Gray
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-                        </ControlBar>
-                        <CollateContainer>
-                            <canvas style={{ maxWidth: '100%', maxHeight: '70vh' }} id="collate-canvas"></canvas>
-                            {/* <img
-                                style={{ maxWidth: '100%', maxHeight: '70vh' }}
-                                src={photoPreview}
-                                alt="image cut preview"
-                            ></img> */}
-                        </CollateContainer>
-                        <Button
-                            variant="contained"
-                            color="success"
-                            startIcon={<DownloadIcon />}
-                            onClick={() => {
-                                downloadPrint();
-                            }}
+            {uploadImage && (
+                <>
+                    <Typography variant="h5" gutterBottom>
+                        Collate Image
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                        <Select
+                            size="small"
+                            value={photoPaper?.name ?? ''}
+                            onChange={onPhotoPaperChange}
+                            sx={{ width: '45%' }}
                         >
-                            Download Print
-                        </Button>
-                    </>
-                )
-                // ) : (
-                //     <Grid container spacing={2} alignItems="center" justifyContent="center" height={'100%'}>
-                //         <Grid item textAlign="center">
-                //             {/* TODO: Optimize this process by using a worker to do the heavy image processing so this
-                //             loading animation can work */}
-                //             {/* <CircularProgress size={48} color="success" /> */}
-                //             <Typography variant="h4">Loading...</Typography>
-                //         </Grid>
-                //     </Grid>
-                // ))}
-            }
+                            {photoPaperConfigArr.map(({ name, unit }) => (
+                                <MenuItem key={name} value={name}>{`${name} ${unit}`}</MenuItem>
+                            ))}
+                        </Select>
+
+                        <ToggleButtonGroup
+                            size="small"
+                            exclusive
+                            value={backgroundColor}
+                            onChange={(_, value) => {
+                                setBackgroundColor(value);
+                                setPhotoPaper({ ...photoPaper!, backgroundColor: value });
+                            }}
+                            sx={{ ml: 2 }}
+                        >
+                            <ToggleButton value={'#fff'}>White</ToggleButton>
+                            <ToggleButton value={'blue'}>Blue</ToggleButton>
+                            <ToggleButton value={'#333'}>Gray</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
+                    <Box sx={{ flexGrow: 1, textAlign: 'center', my: 0.5 }}>
+                        <canvas style={{ maxWidth: '100%', maxHeight: '70vh' }} id="collate-canvas"></canvas>
+                    </Box>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => {
+                            downloadPrint();
+                        }}
+                        sx={{ mt: 2 }}
+                    >
+                        Download Print
+                    </Button>
+                </>
+            )}
         </StyledPaper>
     );
 };
 
 export default Collate;
-
-const StyledPaper = styled(Paper)`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-
-const ControlBar = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const CollateContainer = styled.div`
-    flex: 1;
-    text-align: center;
-    margin: 5px 0;
-`;
