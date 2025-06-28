@@ -1,5 +1,5 @@
 import { Camera, CameraAlt } from '@mui/icons-material';
-import { Button, Grid, Paper, Typography } from '@mui/material';
+import { Button, Box, Paper, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { useStore } from '../../stores/store';
 import StyledPaper from '../../components/StyledPaper';
@@ -19,16 +19,16 @@ const Upload = () => {
         <StyledPaper>
             <Typography variant="h4">{`Upload a photo`}</Typography>
             <div style={{ height: 30 }} />
-            <Grid container spacing={2} alignItems="center" justifyContent="center">
-                <Grid item alignItems="center">
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <input style={{ display: 'none' }} id="file-upload" type="file" onChange={onFileChange} />
                     <label htmlFor="file-upload">
                         <Button variant="contained" color="primary" component="span" endIcon={<CameraAlt />}>
                             Select File
                         </Button>
                     </label>
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
         </StyledPaper>
     );
 };

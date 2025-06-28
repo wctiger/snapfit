@@ -1,4 +1,4 @@
-import { Container, Grid, useTheme } from '@mui/material';
+import { Container, Box, useTheme } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { useStore } from '../../stores/store';
 import Footer from './Footer';
@@ -18,14 +18,14 @@ const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
             <TopBar />
             <div style={{ backgroundColor: isDarkMode ? '#212121' : '#f5f5f5' }}>
                 <Container maxWidth="lg">
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 4px)' }, height: '85vh' }}>
                             {leftComp}
-                        </Grid>
-                        <Grid item xs={12} sm={6} style={{ height: '85vh' }}>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 4px)' }, height: '85vh' }}>
                             {rightComp}
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
                     <Footer></Footer>
                 </Container>
             </div>
