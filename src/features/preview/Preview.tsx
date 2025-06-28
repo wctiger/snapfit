@@ -1,10 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
 import StyledPaper from '../../components/StyledPaper';
 
 const Preview = () => {
     return (
-        <StyledPaper>
+        <StyledPaper sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <Box
                 sx={{
                     display: 'flex',
@@ -12,16 +11,13 @@ const Preview = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 2,
+                    textAlign: 'center',
                 }}
             >
-                <Box>
-                    <Typography variant="h4">Print Preview</Typography>
-                </Box>
-                <Box sx={{ margin: '20px 5px 0' }}>
-                    <Typography variant="body1">
-                        To preview the printed image on actual photo paper, kindly upload a photo from the left panel.
-                    </Typography>
-                </Box>
+                <Typography variant="h4">Print Preview</Typography>
+                <Typography variant="body1">
+                    To preview the printed image on actual photo paper, kindly upload a photo from the left panel.
+                </Typography>
             </Box>
         </StyledPaper>
     );

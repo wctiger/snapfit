@@ -1,5 +1,5 @@
-import { Camera, CameraAlt } from '@mui/icons-material';
-import { Button, Box, Paper, Typography } from '@mui/material';
+import { CameraAlt } from '@mui/icons-material';
+import { Button, Box, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { useStore } from '../../stores/store';
 import StyledPaper from '../../components/StyledPaper';
@@ -16,10 +16,9 @@ const Upload = () => {
         }
     };
     return (
-        <StyledPaper>
-            <Typography variant="h4">{`Upload a photo`}</Typography>
-            <div style={{ height: 30 }} />
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+        <StyledPaper sx={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Typography variant="h4" gutterBottom>{`Upload a photo`}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <input style={{ display: 'none' }} id="file-upload" type="file" onChange={onFileChange} />
                     <label htmlFor="file-upload">
@@ -34,5 +33,3 @@ const Upload = () => {
 };
 
 export default Upload;
-
-// create a file upload component using Mui and React

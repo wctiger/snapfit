@@ -1,7 +1,6 @@
-import styled from '@emotion/styled';
-import { Box, Button, debounce, MenuItem, Paper, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Select, SelectChangeEvent, Slider } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useStore } from '../../stores/store';
 import imageConfigArr from '../../config/target-image-config.json';
@@ -9,6 +8,7 @@ import { IImageConfig } from '../../types';
 import DownloadIcon from '@mui/icons-material/Download';
 import { getCroppedImg } from '../../core/imageHelpers';
 import { downloadImage } from '../../utils';
+import StyledPaper from '../../components/StyledPaper';
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
@@ -53,8 +53,7 @@ const Crop = () => {
 
     return (
         <StyledPaper>
-            {/* <Typography variant="h4">Crop</Typography> */}
-            <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                 <Button
                     startIcon={<DownloadIcon />}
                     onClick={() => {
@@ -75,23 +74,12 @@ const Crop = () => {
                     Pick another photo
                 </Button>
             </Box>
-            <Box>
-                {/* <FormControlLabel
-                    control={
-                        <Switch
-                            checked={customSizing}
-                            onChange={(e, checked) => {
-                                setCustomSizing(checked);
-                            }}
-                        />
-                    }
-                    label="Use Custom Sizing"
-                /> */}
+            <Box sx={{ mb: 2 }}>
                 {customSizing ? (
                     <Box></Box>
                 ) : (
                     <Select
-                        style={{ width: '100%' }}
+                        fullWidth
                         size="small"
                         onChange={onTargetImageChange}
                         value={targetImage?.name ?? ''}
@@ -104,7 +92,7 @@ const Crop = () => {
                     </Select>
                 )}
             </Box>
-            <CropperContainer>
+            <Box sx={{ position: 'relative', flex: 1 }}>
                 <Cropper
                     image={uploadImage as string}
                     crop={crop}
@@ -120,7 +108,7 @@ const Crop = () => {
                     }}
                     onCropComplete={onCropComplete}
                 />
-            </CropperContainer>
+            </Box>
             <Slider
                 min={ZOOM_MIN}
                 max={ZOOM_MAX}
@@ -131,20 +119,10 @@ const Crop = () => {
                 onChange={(_, value) => {
                     setZoom(+value);
                 }}
+                sx={{ mt: 2 }}
             />
         </StyledPaper>
     );
 };
 
 export default Crop;
-
-const StyledPaper = styled(Paper)`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-
-const CropperContainer = styled.div`
-    position: relative;
-    flex: 1;
-`;
