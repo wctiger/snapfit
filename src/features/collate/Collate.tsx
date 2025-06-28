@@ -38,13 +38,15 @@ const Collate = () => {
         <StyledPaper>
             {uploadImage && (
                 <>
-                    <Typography variant="h5" gutterBottom>Collate Image</Typography>
+                    <Typography variant="h5" gutterBottom>
+                        Collate Image
+                    </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                         <Select
-                            fullWidth
                             size="small"
                             value={photoPaper?.name ?? ''}
                             onChange={onPhotoPaperChange}
+                            sx={{ width: '45%' }}
                         >
                             {photoPaperConfigArr.map(({ name, unit }) => (
                                 <MenuItem key={name} value={name}>{`${name} ${unit}`}</MenuItem>
@@ -61,15 +63,9 @@ const Collate = () => {
                             }}
                             sx={{ ml: 2 }}
                         >
-                            <ToggleButton value={'#fff'}>
-                                White
-                            </ToggleButton>
-                            <ToggleButton value={'blue'}>
-                                Blue
-                            </ToggleButton>
-                            <ToggleButton value={'#333'}>
-                                Gray
-                            </ToggleButton>
+                            <ToggleButton value={'#fff'}>White</ToggleButton>
+                            <ToggleButton value={'blue'}>Blue</ToggleButton>
+                            <ToggleButton value={'#333'}>Gray</ToggleButton>
                         </ToggleButtonGroup>
                     </Box>
                     <Box sx={{ flexGrow: 1, textAlign: 'center', my: 0.5 }}>
