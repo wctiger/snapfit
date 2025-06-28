@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Select, SelectChangeEvent, Slider } from '@mui/material';
+import { Box, Button, MenuItem, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
@@ -53,8 +53,10 @@ const Crop = () => {
 
     return (
         <StyledPaper>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h5" gutterBottom>Crop Image</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Button
+                    variant="outlined"
                     startIcon={<DownloadIcon />}
                     onClick={() => {
                         if (croppedImageRaw.current) {
@@ -66,6 +68,7 @@ const Crop = () => {
                     Preview Cropped Image
                 </Button>
                 <Button
+                    variant="outlined"
                     startIcon={<ReplayIcon />}
                     onClick={() => {
                         setUploadImage(null);

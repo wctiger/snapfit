@@ -17,7 +17,7 @@ const Upload = () => {
     };
     return (
         <StyledPaper sx={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Typography variant="h4" gutterBottom>{`Upload a photo`}</Typography>
+            <Typography variant="h5" gutterBottom>{`Upload a photo`}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <input style={{ display: 'none' }} id="file-upload" type="file" onChange={onFileChange} />

@@ -38,10 +38,11 @@ const Collate = () => {
         <StyledPaper>
             {uploadImage && (
                 <>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="h5" gutterBottom>Collate Image</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                         <Select
+                            fullWidth
                             size="small"
-                            sx={{ width: '45%' }}
                             value={photoPaper?.name ?? ''}
                             onChange={onPhotoPaperChange}
                         >
@@ -58,14 +59,15 @@ const Collate = () => {
                                 setBackgroundColor(value);
                                 setPhotoPaper({ ...photoPaper!, backgroundColor: value });
                             }}
+                            sx={{ ml: 2 }}
                         >
-                            <ToggleButton sx={{ color: '#fff' }} value={'#fff'}>
+                            <ToggleButton value={'#fff'}>
                                 White
                             </ToggleButton>
-                            <ToggleButton sx={{ color: 'blue' }} value={'blue'}>
+                            <ToggleButton value={'blue'}>
                                 Blue
                             </ToggleButton>
-                            <ToggleButton sx={{ color: '#333' }} value={'#333'}>
+                            <ToggleButton value={'#333'}>
                                 Gray
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -80,6 +82,7 @@ const Collate = () => {
                         onClick={() => {
                             downloadPrint();
                         }}
+                        sx={{ mt: 2 }}
                     >
                         Download Print
                     </Button>

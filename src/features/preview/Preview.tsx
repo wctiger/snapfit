@@ -14,7 +14,7 @@ const Preview = () => {
                     textAlign: 'center',
                 }}
             >
-                <Typography variant="h4">Print Preview</Typography>
+                <Typography variant="h5">Print Preview</Typography>
                 <Typography variant="body1">
                     To preview the printed image on actual photo paper, kindly upload a photo from the left panel.
                 </Typography>
