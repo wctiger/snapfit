@@ -42,37 +42,12 @@ export function generateCollate(
 ) {
     const canvasOutput = document.getElementById('collate-canvas') as HTMLCanvasElement;
     // const canvasOutput = document.createElement('canvas');
-    if (!offscreen) {
-        offscreen = (canvasOutput as any).transferControlToOffscreen();
-    }
+    // if (!offscreen) {
+    //     offscreen = (canvasOutput as any).transferControlToOffscreen();
+    // }
 
     const [targetWidth, targetHeight] = getImageInPx(targetImageConfig);
     const [photoPaperWidth, photoPaperHeight] = getImageInPx(photoPaperConfig);
-
-    const canvasScaled = document.createElement('canvas');
-    const ctxScaled = canvasScaled.getContext('2d');
-    if (!ctxScaled) return '';
-
-    canvasScaled.width = targetWidth;
-    canvasScaled.height = targetHeight;
-    ctxScaled.drawImage(patternImage, 0, 0, targetWidth, targetHeight);
-    const scaledData = ctxScaled.getImageData(0, 0, targetWidth, targetHeight);
-
-    // const url = new URL('./imageWorker.ts', import.meta.url);
-    worker.postMessage(
-        {
-            canvas: offscreen,
-            scaledData,
-            targetWidth,
-            targetHeight,
-            photoPaperWidth,
-            photoPaperHeight,
-            backgroundColor: photoPaperConfig.backgroundColor,
-        },
-        [offscreen as unknown as Transferable] // transfer ownership of the offscreen canvas
-    );
-    // const ctxOutput = canvasOutput.getContext('2d');
-    // if (!ctxOutput) return '';
 
     // const canvasScaled = document.createElement('canvas');
     // const ctxScaled = canvasScaled.getContext('2d');
@@ -83,30 +58,55 @@ export function generateCollate(
     // ctxScaled.drawImage(patternImage, 0, 0, targetWidth, targetHeight);
     // const scaledData = ctxScaled.getImageData(0, 0, targetWidth, targetHeight);
 
-    // const { imagePositions, rotatePaper } = calculatePositions(
-    //     photoPaperWidth,
-    //     photoPaperHeight,
-    //     targetWidth,
-    //     targetHeight
+    // const url = new URL('./imageWorker.ts', import.meta.url);
+    // worker.postMessage(
+    //     {
+    //         canvas: offscreen,
+    //         scaledData,
+    //         targetWidth,
+    //         targetHeight,
+    //         photoPaperWidth,
+    //         photoPaperHeight,
+    //         backgroundColor: photoPaperConfig.backgroundColor,
+    //     },
+    //     [offscreen as unknown as Transferable] // transfer ownership of the offscreen canvas
     // );
+    const ctxOutput = canvasOutput.getContext('2d');
+    if (!ctxOutput) return '';
 
-    // if (rotatePaper) {
-    //     canvasOutput.width = photoPaperHeight;
-    //     canvasOutput.height = photoPaperWidth;
-    // } else {
-    //     canvasOutput.width = photoPaperWidth;
-    //     canvasOutput.height = photoPaperHeight;
-    // }
+    const canvasScaled = document.createElement('canvas');
+    const ctxScaled = canvasScaled.getContext('2d');
+    if (!ctxScaled) return '';
 
-    // ctxOutput.fillStyle = photoPaperConfig.backgroundColor || 'white';
-    // ctxOutput.fillRect(0, 0, canvasOutput.width, canvasOutput.height);
+    canvasScaled.width = targetWidth;
+    canvasScaled.height = targetHeight;
+    ctxScaled.drawImage(patternImage, 0, 0, targetWidth, targetHeight);
+    const scaledData = ctxScaled.getImageData(0, 0, targetWidth, targetHeight);
 
-    // for (const row of imagePositions) {
-    //     for (const pos of row) {
-    //         const { pos_x, pos_y } = pos;
-    //         ctxOutput.putImageData(scaledData, pos_x, pos_y);
-    //     }
-    // }
+    const { imagePositions, rotatePaper } = calculatePositions(
+        photoPaperWidth,
+        photoPaperHeight,
+        targetWidth,
+        targetHeight
+    );
+
+    if (rotatePaper) {
+        canvasOutput.width = photoPaperHeight;
+        canvasOutput.height = photoPaperWidth;
+    } else {
+        canvasOutput.width = photoPaperWidth;
+        canvasOutput.height = photoPaperHeight;
+    }
+
+    ctxOutput.fillStyle = photoPaperConfig.backgroundColor || 'white';
+    ctxOutput.fillRect(0, 0, canvasOutput.width, canvasOutput.height);
+
+    for (const row of imagePositions) {
+        for (const pos of row) {
+            const { pos_x, pos_y } = pos;
+            ctxOutput.putImageData(scaledData, pos_x, pos_y);
+        }
+    }
 
     return canvasOutput.toDataURL('image/jpeg');
 }
