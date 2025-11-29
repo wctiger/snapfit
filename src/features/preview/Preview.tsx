@@ -1,24 +1,14 @@
-import { Box, Typography } from '@mui/material';
 import StyledPaper from '../../components/StyledPaper';
 
 const Preview = () => {
     return (
-        <StyledPaper sx={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2,
-                    textAlign: 'center',
-                }}
-            >
-                <Typography variant="h5">Print Preview</Typography>
-                <Typography variant="body1">
+        <StyledPaper className="justify-center items-center">
+            <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <h5 className="text-2xl font-semibold">Print Preview</h5>
+                <p className="text-base">
                     To preview the printed image on actual photo paper, kindly upload a photo from the left panel.
-                </Typography>
-            </Box>
+                </p>
+            </div>
         </StyledPaper>
     );
 };

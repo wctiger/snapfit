@@ -1,4 +1,3 @@
-import { Container, Box } from '@mui/material';
 import { FC, ReactNode } from 'react';
 
 interface ILayoutProps {
@@ -8,16 +7,16 @@ interface ILayoutProps {
 
 const Layout: FC<ILayoutProps> = ({ leftComp, rightComp }) => {
     return (
-        <Container maxWidth="lg" sx={{ my: 3 }}>
-            <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 12px)' }, minHeight: '80vh' }}>
+        <div className="container mx-auto h-full max-w-screen-xl">
+            <div className="flex flex-wrap justify-center gap-6 h-full">
+                <div className="flex-1 min-w-full sm:min-w-[calc(50%-12px)] h-full overflow-auto">
                     {leftComp}
-                </Box>
-                <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 12px)' }, minHeight: '80vh' }}>
+                </div>
+                <div className="flex-1 min-w-full sm:min-w-[calc(50%-12px)] h-full overflow-auto">
                     {rightComp}
-                </Box>
-            </Box>
-        </Container>
+                </div>
+            </div>
+        </div>
     );
 };
 
