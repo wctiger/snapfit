@@ -1,14 +1,15 @@
-import { Box, Button, MenuItem, Select, SelectChangeEvent, Slider, Typography } from '@mui/material';
-import ReplayIcon from '@mui/icons-material/Replay';
+import { Download, RotateCcw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useStore } from '../../stores/store';
 import imageConfigArr from '../../config/target-image-config.json';
 import { IImageConfig } from '../../types';
-import DownloadIcon from '@mui/icons-material/Download';
 import { getCroppedImg } from '../../core/imageHelpers';
 import { downloadImage } from '../../utils';
 import StyledPaper from '../../components/StyledPaper';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
@@ -41,7 +42,7 @@ const Crop = () => {
         }
     };
 
-    const onTargetImageChange = ({ target: { value } }: SelectChangeEvent) => {
+    const onTargetImageChange = (value: string) => {
         //@ts-ignore
         const selectedConfig: IImageConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
@@ -53,11 +54,10 @@ const Crop = () => {
 
     return (
         <StyledPaper>
-            <Typography variant="h5" gutterBottom>Crop Image</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+            <h5 className="text-2xl font-semibold mb-4">Crop Image</h5>
+            <div className="flex justify-between mb-6">
                 <Button
-                    variant="outlined"
-                    startIcon={<DownloadIcon />}
+                    variant="outline"
                     onClick={() => {
                         if (croppedImageRaw.current) {
                             const outputFile = `${targetImage?.name}_crop_preview.jpg`;
@@ -65,37 +65,41 @@ const Crop = () => {
                         }
                     }}
                 >
+                    <Download className="mr-2 h-4 w-4" />
                     Preview Cropped Image
                 </Button>
                 <Button
-                    variant="outlined"
-                    startIcon={<ReplayIcon />}
+                    variant="outline"
                     onClick={() => {
                         setUploadImage(null);
                     }}
                 >
+                    <RotateCcw className="mr-2 h-4 w-4" />
                     Pick another photo
                 </Button>
-            </Box>
-            <Box sx={{ mb: 2 }}>
+            </div>
+            <div className="mb-4">
                 {customSizing ? (
-                    <Box></Box>
+                    <div></div>
                 ) : (
                     <Select
-                        fullWidth
-                        size="small"
-                        onChange={onTargetImageChange}
+                        onValueChange={onTargetImageChange}
                         value={targetImage?.name ?? ''}
                     >
-                        {imageConfigArr.map(({ name, descripton }) => (
-                            <MenuItem key={name} value={name}>
-                                {`${name} ${descripton ? '(' + descripton + ')' : ''}`}
-                            </MenuItem>
-                        ))}
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select target size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {imageConfigArr.map(({ name, descripton }) => (
+                                <SelectItem key={name} value={name}>
+                                    {`${name} ${descripton ? '(' + descripton + ')' : ''}`}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
                     </Select>
                 )}
-            </Box>
-            <Box sx={{ position: 'relative', flex: 1 }}>
+            </div>
+            <div className="relative flex-1 min-h-[300px] bg-muted rounded-md overflow-hidden">
                 <Cropper
                     image={uploadImage as string}
                     crop={crop}
@@ -111,19 +115,18 @@ const Crop = () => {
                     }}
                     onCropComplete={onCropComplete}
                 />
-            </Box>
-            <Slider
-                min={ZOOM_MIN}
-                max={ZOOM_MAX}
-                step={0.05}
-                valueLabelDisplay="auto"
-                valueLabelFormat={value => `${value}x`}
-                value={zoom}
-                onChange={(_, value) => {
-                    setZoom(+value);
-                }}
-                sx={{ mt: 2 }}
-            />
+            </div>
+            <div className="mt-4 px-2">
+                <Slider
+                    min={ZOOM_MIN}
+                    max={ZOOM_MAX}
+                    step={0.05}
+                    value={[zoom]}
+                    onValueChange={(value) => {
+                        setZoom(value[0]);
+                    }}
+                />
+            </div>
         </StyledPaper>
     );
 };

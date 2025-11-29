@@ -1,5 +1,5 @@
-import { CameraAlt } from '@mui/icons-material';
-import { Button, Box, Typography } from '@mui/material';
+import { Camera } from 'lucide-react';
+import { Button } from '../../components/ui/button';
 import { ChangeEvent } from 'react';
 import { useStore } from '../../stores/store';
 import StyledPaper from '../../components/StyledPaper';
@@ -16,18 +16,21 @@ const Upload = () => {
         }
     };
     return (
-        <StyledPaper sx={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Typography variant="h5" gutterBottom>{`Upload a photo`}</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 4 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <StyledPaper className="justify-center items-center">
+            <h5 className="text-2xl font-semibold mb-4">Upload a photo</h5>
+            <div className="flex items-center justify-center gap-4 mt-8">
+                <div className="flex items-center">
                     <input style={{ display: 'none' }} id="file-upload" type="file" onChange={onFileChange} />
                     <label htmlFor="file-upload">
-                        <Button variant="contained" color="primary" component="span" endIcon={<CameraAlt />}>
-                            Select File
+                        <Button variant="default" asChild className="cursor-pointer">
+                            <span>
+                                Select File
+                                <Camera className="ml-2 h-4 w-4" />
+                            </span>
                         </Button>
                     </label>
-                </Box>
-            </Box>
+                </div>
+            </div>
         </StyledPaper>
     );
 };

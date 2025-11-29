@@ -1,41 +1,31 @@
-import GitHubIcon from '@mui/icons-material/GitHub';
-import { Box, Divider, Link, Typography } from '@mui/material';
+import { Github } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const Footer = () => {
     return (
-        <Box component="footer" sx={{ mt: 'auto', py: 3, px: 2, bgcolor: 'background.paper' }}>
-            <Divider sx={{ mt: '10px' }} />
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    textAlign: 'center',
-                    fontSize: '0.9rem',
-                    mt: 2,
-                }}
-            >
-                <Typography variant="body2" color="text.secondary">
+        <footer className="mt-auto py-6 px-4 bg-background">
+            <div className="h-[1px] w-full bg-border mb-4" />
+            <div className="flex flex-col sm:flex-row items-center justify-between text-center text-sm mt-2">
+                <p className="text-muted-foreground">
                     Inspired by [
-                    <Link href="http://www.sandcomp.com/blog/sandphoto/" target="_blank" color="inherit">
+                    <a href="http://www.sandcomp.com/blog/sandphoto/" target="_blank" rel="noreferrer" className="hover:underline text-foreground">
                         sandphoto
-                    </Link>
+                    </a>
                     ]
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: { xs: 1, sm: 0 } }}>
-                    <Typography variant="body2" color="text.secondary">
+                </p>
+                <div className="flex items-center mt-2 sm:mt-0">
+                    <p className="text-muted-foreground">
                         Copyright &copy;&nbsp;
-                        <Link href="https://github.com/wctiger" target="_blank" color="inherit">
+                        <a href="https://github.com/wctiger" target="_blank" rel="noreferrer" className="hover:underline text-foreground">
                             wctiger
-                        </Link>
-                    </Typography>
-                    <Link href="https://github.com/wctiger" target="_blank" color="inherit" sx={{ ml: 0.5 }}>
-                        <GitHubIcon fontSize="inherit" />
-                    </Link>
-                </Box>
-            </Box>
-        </Box>
+                        </a>
+                    </p>
+                    <a href="https://github.com/wctiger" target="_blank" rel="noreferrer" className="ml-2 text-foreground hover:text-muted-foreground">
+                        <Github className="h-4 w-4" />
+                    </a>
+                </div>
+            </div>
+        </footer>
     );
 };
 

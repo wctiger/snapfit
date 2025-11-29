@@ -1,19 +1,13 @@
-import DownloadIcon from '@mui/icons-material/Download';
-import {
-    Button,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    ToggleButton,
-    ToggleButtonGroup,
-    Typography,
-    Box,
-} from '@mui/material';
+import { Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useStore } from '../../stores/store';
 import photoPaperConfigArr from '../../config/photo-paper-config.json';
 import useImageCollate from './hooks/useImageCollate';
 import StyledPaper from '../../components/StyledPaper';
+import { IImageConfig } from '../../types';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const Collate = () => {
     const { uploadImage, photoPaper, setPhotoPaper } = useStore();
@@ -26,7 +20,7 @@ const Collate = () => {
         setPhotoPaper({ ...photoPaperConfigArr[0], backgroundColor });
     }, []);
 
-    const onPhotoPaperChange = ({ target: { value } }: SelectChangeEvent) => {
+    const onPhotoPaperChange = (value: string) => {
         //@ts-ignore
         const selectedConfig: IImageConfig = photoPaperConfigArr.find(config => config.name === value);
         if (selectedConfig) {
@@ -38,48 +32,59 @@ const Collate = () => {
         <StyledPaper>
             {uploadImage && (
                 <>
-                    <Typography variant="h5" gutterBottom>
+                    <h5 className="text-2xl font-semibold mb-4">
                         Collate Image
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                        <Select
-                            size="small"
-                            value={photoPaper?.name ?? ''}
-                            onChange={onPhotoPaperChange}
-                            sx={{ width: '45%' }}
-                        >
-                            {photoPaperConfigArr.map(({ name, unit }) => (
-                                <MenuItem key={name} value={name}>{`${name} ${unit}`}</MenuItem>
-                            ))}
-                        </Select>
+                    </h5>
+                    <div className="flex justify-between mb-6">
+                        <div className="w-[45%]">
+                            <Select
+                                value={photoPaper?.name ?? ''}
+                                onValueChange={onPhotoPaperChange}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select paper size" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {photoPaperConfigArr.map(({ name, unit }) => (
+                                        <SelectItem key={name} value={name}>{`${name} ${unit}`}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        <ToggleButtonGroup
-                            size="small"
-                            exclusive
+                        <ToggleGroup
+                            type="single"
                             value={backgroundColor}
-                            onChange={(_, value) => {
-                                setBackgroundColor(value);
-                                setPhotoPaper({ ...photoPaper!, backgroundColor: value });
+                            onValueChange={(value) => {
+                                if (value) {
+                                    setBackgroundColor(value);
+                                    setPhotoPaper({ ...photoPaper!, backgroundColor: value });
+                                }
                             }}
-                            sx={{ ml: 2 }}
+                            className="ml-4"
                         >
-                            <ToggleButton value={'#fff'}>White</ToggleButton>
-                            <ToggleButton value={'blue'}>Blue</ToggleButton>
-                            <ToggleButton value={'#333'}>Gray</ToggleButton>
-                        </ToggleButtonGroup>
-                    </Box>
-                    <Box sx={{ flexGrow: 1, textAlign: 'center', my: 0.5 }}>
+                            <ToggleGroupItem value="#fff" aria-label="White">
+                                White
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="blue" aria-label="Blue">
+                                Blue
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="#333" aria-label="Gray">
+                                Gray
+                            </ToggleGroupItem>
+                        </ToggleGroup>
+                    </div>
+                    <div className="flex-grow text-center my-1">
                         <canvas style={{ maxWidth: '100%', maxHeight: '70vh' }} id="collate-canvas"></canvas>
-                    </Box>
+                    </div>
                     <Button
-                        variant="contained"
-                        color="success"
-                        startIcon={<DownloadIcon />}
+                        variant="default"
+                        className="mt-4 bg-green-600 hover:bg-green-700"
                         onClick={() => {
                             downloadPrint();
                         }}
-                        sx={{ mt: 2 }}
                     >
+                        <Download className="mr-2 h-4 w-4" />
                         Download Print
                     </Button>
                 </>

@@ -1,34 +1,30 @@
-import Brightness4 from '@mui/icons-material/Brightness4';
-import Brightness7 from '@mui/icons-material/Brightness7';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import AppBar from '@mui/material/AppBar';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import { Moon, Sun, Scissors } from 'lucide-react';
+import { Button } from '../ui/button';
 import { useStore } from '../../stores/store';
 
 export default function TopBar() {
     const { theme, setTheme } = useStore();
     return (
-        <AppBar position="static">
-            <Toolbar>
-                <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
-                    <ContentCutIcon />
-                </IconButton>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <header className="bg-background text-foreground border-b shadow-sm">
+            <div className="container mx-auto flex h-16 items-center px-4">
+                <Button variant="ghost" size="icon" className="mr-2 hover:bg-accent hover:text-accent-foreground">
+                    <Scissors className="h-6 w-6" />
+                </Button>
+                <div className="flex-grow text-xl font-semibold">
                     SNAPFIT
-                </Typography>
-                <IconButton
-                    sx={{ ml: 1 }}
+                </div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-1 hover:bg-accent hover:text-accent-foreground"
                     onClick={() => {
                         const nextKey = theme === 'dark' ? 'light' : 'dark';
                         setTheme(nextKey);
                     }}
-                    color="inherit"
                 >
-                    {theme === 'dark' ? <Brightness7 /> : <Brightness4 />}
-                </IconButton>
-            </Toolbar>
-        </AppBar>
+                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+            </div>
+        </header>
     );
 }
