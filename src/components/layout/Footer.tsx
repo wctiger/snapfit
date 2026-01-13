@@ -1,28 +1,41 @@
 import { Github } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 
 const Footer = () => {
     return (
-        <footer className="mt-auto py-6 px-4 bg-background">
-            <div className="h-[1px] w-full bg-border mb-4" />
-            <div className="flex flex-col sm:flex-row items-center justify-between text-center text-sm mt-2">
-                <p className="text-muted-foreground">
-                    Inspired by [
-                    <a href="http://www.sandcomp.com/blog/sandphoto/" target="_blank" rel="noreferrer" className="hover:underline text-foreground">
-                        sandphoto
-                    </a>
-                    ]
-                </p>
-                <div className="flex items-center mt-2 sm:mt-0">
-                    <p className="text-muted-foreground">
-                        Copyright &copy;&nbsp;
-                        <a href="https://github.com/wctiger" target="_blank" rel="noreferrer" className="hover:underline text-foreground">
-                            wctiger
+        <footer className="mt-auto border-t border-border/40 bg-background/50">
+            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+                    <p>
+                        Inspired by{' '}
+                        <a
+                            href="http://www.sandcomp.com/blog/sandphoto/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-medium text-foreground/80 hover:text-foreground transition-colors"
+                        >
+                            sandphoto
                         </a>
                     </p>
-                    <a href="https://github.com/wctiger" target="_blank" rel="noreferrer" className="ml-2 text-foreground hover:text-muted-foreground">
-                        <Github className="h-4 w-4" />
-                    </a>
+                    <div className="flex items-center gap-1.5">
+                        <span>&copy; {new Date().getFullYear()}</span>
+                        <a
+                            href="https://github.com/wctiger"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-medium text-foreground/80 hover:text-foreground transition-colors"
+                        >
+                            wctiger
+                        </a>
+                        <a
+                            href="https://github.com/wctiger"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="ml-1 p-1 rounded-md hover:bg-accent transition-colors"
+                            aria-label="GitHub"
+                        >
+                            <Github className="h-4 w-4" />
+                        </a>
+                    </div>
                 </div>
             </div>
         </footer>

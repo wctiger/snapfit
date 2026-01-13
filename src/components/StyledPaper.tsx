@@ -10,10 +10,15 @@ interface StyledPaperProps {
 
 const StyledPaper: FC<StyledPaperProps> = ({ children, className }) => {
     return (
-        <Card className={cn("w-full h-full flex flex-col p-4", className)}>
-            <CardContent className="flex-1 flex flex-col p-0">
-                {children}
-            </CardContent>
+        <Card
+            className={cn(
+                'w-full h-full flex flex-col p-5 sm:p-6',
+                'shadow-card transition-shadow duration-200',
+                'border border-border/50',
+                className
+            )}
+        >
+            <CardContent className="flex-1 flex flex-col p-0">{children}</CardContent>
         </Card>
     );
 };
