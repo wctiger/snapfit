@@ -1,18 +1,18 @@
 import { Download, Loader2, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useStore } from '../../stores/store';
-import photoPaperConfigArr from '../../config/photo-paper-config.json';
+import photoPaperConfigRaw from '../../config/photo-paper-config.json';
 import useImageCollate from './hooks/useImageCollate';
 import StyledPaper from '../../components/StyledPaper';
 import { IImageConfig } from '../../types';
+
+const photoPaperConfigArr = photoPaperConfigRaw as IImageConfig[];
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 const BG_OPTIONS = [
     { value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' },
-    { value: 'blue', label: 'Blue', bgClass: 'bg-blue-500', borderClass: '' },
-    { value: '#333', label: 'Gray', bgClass: 'bg-neutral-600', borderClass: '' },
 ];
 
 const Collate = () => {
@@ -22,13 +22,12 @@ const Collate = () => {
     const [backgroundColor, setBackgroundColor] = useState('#fff');
 
     useEffect(() => {
-        //@ts-ignore
-        setPhotoPaper({ ...photoPaperConfigArr[0], backgroundColor });
+        const defaultPaper = photoPaperConfigArr.find(c => c.name === '6寸(4R)') ?? photoPaperConfigArr[0];
+        setPhotoPaper({ ...defaultPaper, backgroundColor });
     }, []);
 
     const onPhotoPaperChange = (value: string) => {
-        //@ts-ignore
-        const selectedConfig: IImageConfig = photoPaperConfigArr.find(config => config.name === value);
+        const selectedConfig = photoPaperConfigArr.find(config => config.name === value);
         if (selectedConfig) {
             setPhotoPaper({ ...selectedConfig, backgroundColor });
         }
