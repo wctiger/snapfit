@@ -2,8 +2,10 @@ import { Download, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
 import imageConfigRaw from '../../config/target-image-config.json';
 import { getCroppedImg } from '../../core/imageHelpers';
 import { useStore } from '../../stores/store';
@@ -15,6 +17,18 @@ const imageConfigArr = imageConfigRaw as IImageConfig[];
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
+const CUSTOM_NAME = 'Custom';
+
+type DimUnit = 'mm' | 'inch';
+
+function toInternalConfig(w: number, h: number, unit: DimUnit): IImageConfig {
+    return {
+        name: CUSTOM_NAME,
+        width: unit === 'mm' ? w / 10 : w,
+        height: unit === 'mm' ? h / 10 : h,
+        unit: unit === 'mm' ? 'cm' : 'inch',
+    };
+}
 
 const Crop = () => {
     const croppedImageRaw = useRef<string>('');
@@ -24,12 +38,28 @@ const Crop = () => {
     const [zoom, setZoom] = useState(ZOOM_MIN);
     const [cropRatio, setCropRatio] = useState(0);
 
+    const [customUnit, setCustomUnit] = useState<DimUnit>('mm');
+    const [customW, setCustomW] = useState('');
+    const [customH, setCustomH] = useState('');
+
+    const isCustom = targetImage?.name === CUSTOM_NAME;
+
     useEffect(() => {
         const selectedConfig = imageConfigArr[0];
         const ratio = selectedConfig.width / selectedConfig.height;
         setCropRatio(ratio);
         setTargetImage(selectedConfig);
     }, []);
+
+    const applyCustomDims = (w: string, h: string, unit: DimUnit) => {
+        const wv = parseFloat(w);
+        const hv = parseFloat(h);
+        if (wv > 0 && hv > 0) {
+            const cfg = toInternalConfig(wv, hv, unit);
+            setCropRatio(cfg.width / cfg.height);
+            setTargetImage(cfg);
+        }
+    };
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
@@ -43,6 +73,10 @@ const Crop = () => {
     };
 
     const onTargetImageChange = (value: string) => {
+        if (value === CUSTOM_NAME) {
+            setTargetImage({ name: CUSTOM_NAME, width: 0, height: 0, unit: 'cm' });
+            return;
+        }
         const selectedConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
             const ratio = selectedConfig.width / selectedConfig.height;
@@ -98,8 +132,62 @@ const Crop = () => {
                                 </SelectItem>
                             );
                         })}
+                        <SelectItem value={CUSTOM_NAME} className="text-xs">
+                            <span>{CUSTOM_NAME}</span>
+                            <span className="ml-3 text-muted-foreground/60">enter dimensions</span>
+                        </SelectItem>
                     </SelectContent>
                 </Select>
+
+                {isCustom && (
+                    <div className="mt-2 space-y-2">
+                        <div className="flex gap-1">
+                            {(['mm', 'inch'] as const).map(u => (
+                                <button
+                                    key={u}
+                                    onClick={() => {
+                                        setCustomUnit(u);
+                                        applyCustomDims(customW, customH, u);
+                                    }}
+                                    className={cn(
+                                        'px-2.5 py-1 text-[10px] tracking-[0.15em] uppercase border transition-colors',
+                                        customUnit === u
+                                            ? 'border-primary text-primary bg-primary/5'
+                                            : 'border-border/50 text-muted-foreground hover:border-border'
+                                    )}
+                                >
+                                    {u}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="number"
+                                placeholder="W"
+                                value={customW}
+                                min={1}
+                                className="h-8 text-xs w-20"
+                                onChange={e => {
+                                    setCustomW(e.target.value);
+                                    applyCustomDims(e.target.value, customH, customUnit);
+                                }}
+                            />
+                            <span className="text-muted-foreground/50 text-xs">×</span>
+                            <Input
+                                type="number"
+                                placeholder="H"
+                                value={customH}
+                                min={1}
+                                className="h-8 text-xs w-20"
+                                onChange={e => {
+                                    setCustomH(e.target.value);
+                                    applyCustomDims(customW, e.target.value, customUnit);
+                                }}
+                            />
+                            <span className="text-[10px] text-muted-foreground/50">{customUnit}</span>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Crop area */}
@@ -109,7 +197,7 @@ const Crop = () => {
                     crop={crop}
                     onCropChange={point => setLocalCrop(point)}
                     zoom={zoom}
-                    aspect={cropRatio}
+                    aspect={cropRatio || undefined}
                     minZoom={ZOOM_MIN}
                     maxZoom={ZOOM_MAX}
                     onZoomChange={z => setZoom(z)}
