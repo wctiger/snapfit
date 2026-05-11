@@ -1,4 +1,4 @@
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useStore } from '../../stores/store';
 import photoPaperConfigArr from '../../config/photo-paper-config.json';
@@ -7,12 +7,17 @@ import StyledPaper from '../../components/StyledPaper';
 import { IImageConfig } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+
+const BG_OPTIONS = [
+    { value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' },
+    { value: 'blue', label: 'Blue', bgClass: 'bg-blue-500', borderClass: '' },
+    { value: '#333', label: 'Gray', bgClass: 'bg-neutral-600', borderClass: '' },
+];
 
 const Collate = () => {
     const { uploadImage, photoPaper, setPhotoPaper } = useStore();
-    const { loading, photoPreview, downloadPrint } = useImageCollate();
+    const { loading, downloadPrint } = useImageCollate();
 
     const [backgroundColor, setBackgroundColor] = useState('#fff');
 
@@ -29,92 +34,110 @@ const Collate = () => {
         }
     };
 
+    const onBgChange = (value: string) => {
+        setBackgroundColor(value);
+        setPhotoPaper({ ...photoPaper!, backgroundColor: value });
+    };
+
     return (
         <StyledPaper>
             {uploadImage && (
                 <>
-                    <h2 className="text-lg sm:text-xl font-semibold tracking-tight mb-5">Collate Image</h2>
+                    {/* Header */}
+                    <div className="mb-4 space-y-0.5">
+                        <h2 className="font-display text-2xl sm:text-3xl font-light tracking-wide">Arrange</h2>
+                        <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">
+                            Layout for printing
+                        </p>
+                    </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Paper Size</Label>
+                    {/* Controls row */}
+                    <div className="grid grid-cols-2 gap-x-5 gap-y-4 mb-4">
+                        {/* Paper size */}
+                        <div className="col-span-2 sm:col-span-1">
+                            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-1.5">
+                                Paper Size
+                            </p>
                             <Select value={photoPaper?.name ?? ''} onValueChange={onPhotoPaperChange}>
-                                <SelectTrigger className="h-10">
+                                <SelectTrigger className="h-9 text-xs w-full">
                                     <SelectValue placeholder="Select paper size" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {photoPaperConfigArr.map(({ name, unit }) => (
-                                        <SelectItem key={name} value={name}>{`${name} ${unit}`}</SelectItem>
+                                        <SelectItem key={name} value={name} className="text-xs">
+                                            {`${name} ${unit}`}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Background</Label>
-                            <ToggleGroup
-                                type="single"
-                                value={backgroundColor}
-                                onValueChange={value => {
-                                    if (value) {
-                                        setBackgroundColor(value);
-                                        setPhotoPaper({ ...photoPaper!, backgroundColor: value });
-                                    }
-                                }}
-                                className="justify-start"
-                            >
-                                <ToggleGroupItem
-                                    value="#fff"
-                                    aria-label="White"
-                                    className="px-3 h-10 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                >
-                                    White
-                                </ToggleGroupItem>
-                                <ToggleGroupItem
-                                    value="blue"
-                                    aria-label="Blue"
-                                    className="px-3 h-10 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                >
-                                    Blue
-                                </ToggleGroupItem>
-                                <ToggleGroupItem
-                                    value="#333"
-                                    aria-label="Gray"
-                                    className="px-3 h-10 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                >
-                                    Gray
-                                </ToggleGroupItem>
-                            </ToggleGroup>
+                        {/* Background swatches */}
+                        <div className="col-span-2 sm:col-span-1">
+                            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-1.5">
+                                Background
+                            </p>
+                            <div className="flex items-center gap-2.5 h-9">
+                                {BG_OPTIONS.map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => onBgChange(opt.value)}
+                                        title={opt.label}
+                                        aria-label={opt.label}
+                                        className={cn(
+                                            'w-7 h-7 flex items-center justify-center transition-all duration-200',
+                                            opt.bgClass,
+                                            opt.borderClass,
+                                            backgroundColor === opt.value
+                                                ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                                                : 'hover:ring-1 hover:ring-border hover:ring-offset-1 hover:ring-offset-background'
+                                        )}
+                                    >
+                                        {backgroundColor === opt.value && (
+                                            <Check
+                                                className={cn(
+                                                    'h-3 w-3',
+                                                    opt.value === '#fff' ? 'text-foreground/60' : 'text-white'
+                                                )}
+                                            />
+                                        )}
+                                    </button>
+                                ))}
+                                <span className="text-[10px] tracking-[0.1em] text-muted-foreground/60 ml-1">
+                                    {BG_OPTIONS.find(o => o.value === backgroundColor)?.label}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex-grow flex items-center justify-center p-4 bg-muted/30 rounded-lg border border-border/50">
-                        <div className="relative shadow-lg rounded overflow-hidden">
+                    {/* Canvas preview */}
+                    <div className="flex-grow flex items-center justify-center p-4 bg-muted/20 border border-border/30 overflow-hidden">
+                        <div className="relative">
                             {loading && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                <div className="absolute inset-0 flex items-center justify-center bg-background/70 z-10">
+                                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
                                 </div>
                             )}
                             <canvas
                                 id="collate-canvas"
-                                className="max-w-full max-h-[60vh] sm:max-h-[65vh]"
-                            ></canvas>
+                                className="max-w-full max-h-[55vh] sm:max-h-[60vh] shadow-md"
+                            />
                         </div>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-border/50">
+                    {/* Download */}
+                    <div className="mt-4 pt-4 border-t border-border/40">
                         <Button
                             variant="default"
-                            className="w-full sm:w-auto"
-                            onClick={() => {
-                                downloadPrint();
-                            }}
+                            size="sm"
+                            className="text-xs tracking-[0.1em] uppercase"
+                            onClick={downloadPrint}
                             disabled={loading}
                         >
                             {loading ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                             ) : (
-                                <Download className="mr-2 h-4 w-4" />
+                                <Download className="mr-2 h-3.5 w-3.5" />
                             )}
                             Download Print
                         </Button>

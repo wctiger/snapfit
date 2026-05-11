@@ -10,7 +10,6 @@ import StyledPaper from '../../components/StyledPaper';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { Label } from '@/components/ui/label';
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
@@ -21,14 +20,13 @@ const Crop = () => {
 
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);
-    const [customSizing, setCustomSizing] = useState(false);
     const [cropRatio, setCropRatio] = useState(0);
 
     useEffect(() => {
         //@ts-ignore
         const selectedConfig: IImageConfig = imageConfigArr[0];
-        const cropRatio = selectedConfig.width / selectedConfig.height;
-        setCropRatio(cropRatio);
+        const ratio = selectedConfig.width / selectedConfig.height;
+        setCropRatio(ratio);
         setTargetImage(selectedConfig);
     }, [imageConfigArr]);
 
@@ -47,98 +45,99 @@ const Crop = () => {
         //@ts-ignore
         const selectedConfig: IImageConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
-            const cropRatio = selectedConfig.width / selectedConfig.height;
-            setCropRatio(cropRatio);
+            const ratio = selectedConfig.width / selectedConfig.height;
+            setCropRatio(ratio);
             setTargetImage(selectedConfig);
         }
     };
 
     return (
         <StyledPaper>
-            <div className="flex items-center justify-between mb-5">
-                <h2 className="text-lg sm:text-xl font-semibold tracking-tight">Crop Image</h2>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4">
+                <div className="space-y-0.5">
+                    <h2 className="font-display text-2xl sm:text-3xl font-light tracking-wide">Crop Image</h2>
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">
+                        Frame your shot
+                    </p>
+                </div>
+                <button
+                    className="flex items-center gap-1.5 text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border/50 px-2 py-1.5 mt-0.5"
                     onClick={() => setUploadImage(null)}
                 >
-                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                    <RotateCcw className="h-3 w-3" />
                     Change
-                </Button>
+                </button>
             </div>
 
-            <div className="space-y-4 mb-5">
-                <div className="space-y-2">
-                    <Label className="text-sm font-medium text-muted-foreground">Target Size</Label>
-                    {customSizing ? (
-                        <div></div>
-                    ) : (
-                        <Select onValueChange={onTargetImageChange} value={targetImage?.name ?? ''}>
-                            <SelectTrigger className="w-full h-10">
-                                <SelectValue placeholder="Select target size" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {imageConfigArr.map(({ name, descripton }) => (
-                                    <SelectItem key={name} value={name}>
-                                        {`${name} ${descripton ? '(' + descripton + ')' : ''}`}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                </div>
+            {/* Target size selector */}
+            <div className="mb-4">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-1.5">
+                    Target Size
+                </p>
+                <Select onValueChange={onTargetImageChange} value={targetImage?.name ?? ''}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <SelectValue placeholder="Select target size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {imageConfigArr.map(({ name, descripton }) => (
+                            <SelectItem key={name} value={name} className="text-xs">
+                                {`${name}${descripton ? ' (' + descripton + ')' : ''}`}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
 
-            <div className="relative flex-1 min-h-[280px] sm:min-h-[320px] bg-muted/50 rounded-lg overflow-hidden border border-border/50">
+            {/* Crop area */}
+            <div className="relative flex-1 min-h-[260px] sm:min-h-[300px] bg-muted/40 overflow-hidden border border-border/40">
                 <Cropper
                     image={uploadImage as string}
                     crop={crop}
-                    onCropChange={point => {
-                        setLocalCrop(point);
-                    }}
+                    onCropChange={point => setLocalCrop(point)}
                     zoom={zoom}
                     aspect={cropRatio}
                     minZoom={ZOOM_MIN}
                     maxZoom={ZOOM_MAX}
-                    onZoomChange={zoom => {
-                        setZoom(zoom);
-                    }}
+                    onZoomChange={z => setZoom(z)}
                     onCropComplete={onCropComplete}
                 />
             </div>
 
-            <div className="mt-4 space-y-3">
+            {/* Zoom slider */}
+            <div className="mt-3.5">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
+                    Zoom &nbsp;
+                    <span className="text-foreground/50">{zoom.toFixed(2)}×</span>
+                </p>
                 <div className="flex items-center gap-3">
-                    <ZoomOut className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <ZoomOut className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
                     <Slider
                         min={ZOOM_MIN}
                         max={ZOOM_MAX}
                         step={0.05}
                         value={[zoom]}
-                        onValueChange={value => {
-                            setZoom(value[0]);
-                        }}
+                        onValueChange={value => setZoom(value[0])}
                         className="flex-1"
                     />
-                    <ZoomIn className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <ZoomIn className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
                 </div>
             </div>
 
-            <div className="mt-5 pt-4 border-t border-border/50">
+            {/* Footer action */}
+            <div className="mt-4 pt-4 border-t border-border/40">
                 <Button
                     variant="outline"
                     size="sm"
-                    className="w-full sm:w-auto"
+                    className="text-xs tracking-[0.1em] uppercase"
                     onClick={() => {
                         if (croppedImageRaw.current) {
-                            const outputFile = `${targetImage?.name}_crop_preview.jpg`;
-                            downloadImage(croppedImageRaw.current, outputFile);
+                            downloadImage(croppedImageRaw.current, `${targetImage?.name}_crop_preview.jpg`);
                         }
                     }}
                 >
-                    <Download className="mr-2 h-4 w-4" />
-                    Preview Cropped Image
+                    <Download className="mr-2 h-3.5 w-3.5" />
+                    Preview Cropped
                 </Button>
             </div>
         </StyledPaper>

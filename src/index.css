@@ -1,99 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 98%;
-    --foreground: 222.2 84% 4.9%;
+    :root {
+        --background: 38 30% 96%;
+        --foreground: 25 12% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+        --card: 38 25% 98.5%;
+        --card-foreground: 25 12% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+        --popover: 38 25% 98.5%;
+        --popover-foreground: 25 12% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+        --primary: 8 65% 47%;
+        --primary-foreground: 38 25% 98.5%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 35 18% 91%;
+        --secondary-foreground: 25 12% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+        --muted: 35 18% 93%;
+        --muted-foreground: 25 8% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+        --accent: 35 18% 91%;
+        --accent-foreground: 25 12% 12%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 38 25% 98.5%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+        --border: 35 15% 88%;
+        --input: 35 15% 88%;
+        --ring: 8 65% 47%;
 
-    --radius: 0.5rem;
+        --radius: 0.375rem;
 
-    /* Custom shadows for depth */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  }
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    }
 
-  .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    .dark {
+        --background: 25 8% 8%;
+        --foreground: 38 25% 90%;
 
-    --card: 224 71% 6%;
-    --card-foreground: 213 31% 91%;
+        --card: 25 7% 10%;
+        --card-foreground: 38 25% 90%;
 
-    --popover: 224 71% 6%;
-    --popover-foreground: 213 31% 91%;
+        --popover: 25 7% 10%;
+        --popover-foreground: 38 25% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+        --primary: 8 65% 58%;
+        --primary-foreground: 38 25% 90%;
 
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 210 40% 98%;
+        --secondary: 25 6% 14%;
+        --secondary-foreground: 38 25% 90%;
 
-    --muted: 223 47% 11%;
-    --muted-foreground: 215 20.2% 65.1%;
+        --muted: 25 6% 13%;
+        --muted-foreground: 38 12% 57%;
 
-    --accent: 222 47% 11%;
-    --accent-foreground: 210 40% 98%;
+        --accent: 25 6% 14%;
+        --accent-foreground: 38 25% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 38 25% 90%;
 
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --ring: 212.7 26.8% 83.9%;
+        --border: 25 6% 17%;
+        --input: 25 6% 17%;
+        --ring: 8 65% 58%;
 
-    /* Dark mode shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  }
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.45), 0 1px 2px -1px rgb(0 0 0 / 0.35);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.35);
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+    * {
+        @apply border-border;
+    }
 
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
+    html {
+        font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    /* Grain texture overlay */
+    body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 180px 180px;
+        opacity: 0.035;
+    }
 }
 
 @layer utilities {
-  .shadow-card {
-    box-shadow: var(--shadow);
-  }
+    .shadow-card {
+        box-shadow: var(--shadow);
+    }
 
-  .shadow-card-hover {
-    box-shadow: var(--shadow-md);
-  }
+    .shadow-card-hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    .font-display {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Animations */
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-up {
+    animation: fade-up 0.4s ease-out both;
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out both;
+}
+
+/* react-easy-crop custom styles */
+.reactEasyCrop_Container {
+    border-radius: var(--radius);
 }
