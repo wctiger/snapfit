@@ -22,6 +22,7 @@ const Collate = () => {
     useEffect(() => {
         //@ts-ignore
         const defaultPaper = photoPaperConfigArr.find((c: any) => c.name === '6寸(4R)') ?? photoPaperConfigArr[0];
+        //@ts-ignore
         setPhotoPaper({ ...defaultPaper, backgroundColor });
     }, []);
 
