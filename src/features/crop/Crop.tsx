@@ -1,17 +1,17 @@
 import { Download, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
-import { useStore } from '../../stores/store';
-import imageConfigRaw from '../../config/target-image-config.json';
-import { IImageConfig } from '../../types';
-
-const imageConfigArr = imageConfigRaw as IImageConfig[];
-import { getCroppedImg } from '../../core/imageHelpers';
-import { downloadImage } from '../../utils';
-import StyledPaper from '../../components/StyledPaper';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import imageConfigRaw from '../../config/target-image-config.json';
+import { getCroppedImg } from '../../core/imageHelpers';
+import { useStore } from '../../stores/store';
+import { IImageConfig } from '../../types';
+import { downloadImage } from '../../utils';
+import StyledPaper from '../../components/StyledPaper';
+
+const imageConfigArr = imageConfigRaw as IImageConfig[];
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
@@ -57,9 +57,7 @@ const Crop = () => {
             <div className="flex items-start justify-between mb-4">
                 <div className="space-y-0.5">
                     <h2 className="font-display text-2xl sm:text-3xl font-light tracking-wide">Crop Image</h2>
-                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">
-                        Frame your shot
-                    </p>
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">Frame your shot</p>
                 </div>
                 <button
                     className="flex items-center gap-1.5 text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border/50 px-2 py-1.5 mt-0.5"
@@ -72,21 +70,31 @@ const Crop = () => {
 
             {/* Target size selector */}
             <div className="mb-4">
-                <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-1.5">
-                    Target Size
-                </p>
+                <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-1.5">Target Size</p>
                 <Select onValueChange={onTargetImageChange} value={targetImage?.name ?? ''}>
                     <SelectTrigger className="w-full h-9 text-xs">
                         <SelectValue placeholder="Select target size" />
                     </SelectTrigger>
                     <SelectContent>
                         {imageConfigArr.map(({ name, width, height, unit }) => {
-                            const wMm = unit === 'cm' ? Math.round(width * 10) : unit === 'inch' ? Math.round(width * 25.4) : width;
-                            const hMm = unit === 'cm' ? Math.round(height * 10) : unit === 'inch' ? Math.round(height * 25.4) : height;
+                            const wMm =
+                                unit === 'cm'
+                                    ? Math.round(width * 10)
+                                    : unit === 'inch'
+                                      ? Math.round(width * 25.4)
+                                      : width;
+                            const hMm =
+                                unit === 'cm'
+                                    ? Math.round(height * 10)
+                                    : unit === 'inch'
+                                      ? Math.round(height * 25.4)
+                                      : height;
                             return (
                                 <SelectItem key={name} value={name} className="text-xs flex justify-between">
                                     <span>{name}</span>
-                                    <span className="ml-3 text-muted-foreground/60 tabular-nums">{wMm}×{hMm}mm</span>
+                                    <span className="ml-3 text-muted-foreground/60 tabular-nums">
+                                        {wMm}×{hMm}mm
+                                    </span>
                                 </SelectItem>
                             );
                         })}

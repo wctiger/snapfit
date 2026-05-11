@@ -1,6 +1,6 @@
 # CLAUDE.md - AI Assistant Guide for SNAPFIT
 
-> **Last Updated**: 2026-01-13
+> **Last Updated**: 2026-05-10
 > **Repository**: SNAPFIT - Photo Preparation Tool for Printing
 
 ## Table of Contents
@@ -53,7 +53,8 @@
 
 ### Development Tools
 - **TypeScript**: Strict mode enabled
-- **Prettier**: Code formatting (4 spaces, single quotes, 120 char width)
+- **oxfmt**: Code formatter (migrated from Prettier — 4 spaces, single quotes, 120 char width). Config: `.oxfmtrc.json`
+- **oxlint**: Fast linter. Config: `.oxlintrc.json`
 - **PostCSS**: CSS processing with Autoprefixer
 - **Path Aliases**: `@/*` maps to `./src/*`
 
@@ -620,10 +621,23 @@ const selectedConfig: IImageConfig = imageConfigArr[0]; // ⚠️ Assumes struct
 3. Verify `ContentFactory.tsx` conditional logic
 4. Trace state updates with `console.log` in setters
 
+### Before Creating a PR — Required Checks
+
+Run all three before opening a pull request:
+
+```bash
+npm run lint        # oxlint — must show 0 errors
+npm run format:check  # oxfmt -- must show no diffs
+npm run build       # tsc + vite — must succeed
+```
+
+Fix any errors before pushing. Do not use `@ts-ignore` or lint-disable comments to bypass failures.
+
 ### Code Review Checklist
+- [ ] `npm run lint` passes (0 errors)
+- [ ] `npm run format:check` passes (no diffs)
 - [ ] TypeScript compiles (`npm run build`)
-- [ ] Prettier formatted (4 spaces, single quotes)
-- [ ] No `any` types introduced
+- [ ] No `any` types or `@ts-ignore` introduced
 - [ ] State updates use Zustand setters
 - [ ] UI uses shadcn/ui components + Tailwind
 - [ ] Config changes in JSON (not hardcoded)

@@ -98,9 +98,7 @@ const Upload = () => {
                     {/* Labels */}
                     <div className="relative z-10 text-center space-y-1.5">
                         <p className="text-[11px] tracking-[0.25em] uppercase font-medium">
-                            <span className={isDragging ? 'text-primary' : 'text-foreground/80'}>
-                                Click to upload
-                            </span>
+                            <span className={isDragging ? 'text-primary' : 'text-foreground/80'}>Click to upload</span>
                             <span className="text-muted-foreground"> or drag and drop</span>
                         </p>
                         <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/60">
