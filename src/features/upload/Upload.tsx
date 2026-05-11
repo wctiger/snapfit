@@ -1,4 +1,4 @@
-import { Upload as UploadIcon, ImagePlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { ChangeEvent, useState, DragEvent } from 'react';
 import { useStore } from '../../stores/store';
 import StyledPaper from '../../components/StyledPaper';
@@ -39,10 +39,10 @@ const Upload = () => {
 
     return (
         <StyledPaper className="justify-center items-center">
-            <div className="w-full max-w-md mx-auto space-y-6">
-                <div className="text-center space-y-2">
-                    <h2 className="text-lg sm:text-xl font-semibold tracking-tight">Upload a Photo</h2>
-                    <p className="text-sm text-muted-foreground">
+            <div className="w-full max-w-md mx-auto space-y-5">
+                <div className="space-y-1">
+                    <h2 className="font-display text-2xl sm:text-3xl font-light tracking-wide">Upload a Photo</h2>
+                    <p className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground">
                         Select or drag an image to get started
                     </p>
                 </div>
@@ -61,35 +61,51 @@ const Upload = () => {
                     onDragLeave={onDragLeave}
                     onDrop={onDrop}
                     className={`
-                        flex flex-col items-center justify-center gap-4 p-8 sm:p-12
-                        border-2 border-dashed rounded-xl cursor-pointer
-                        transition-all duration-200 ease-in-out
+                        relative flex flex-col items-center justify-center gap-5
+                        p-10 sm:p-14 border border-dashed cursor-pointer
+                        transition-all duration-300 overflow-hidden group min-h-[260px]
                         ${
                             isDragging
-                                ? 'border-primary bg-primary/5 scale-[1.02]'
-                                : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                                ? 'border-primary bg-primary/4 scale-[1.01]'
+                                : 'border-border/70 hover:border-primary/50 hover:bg-accent/30'
                         }
                     `}
                 >
-                    <div
+                    {/* Ghost watermark */}
+                    <span
                         className={`
-                            p-4 rounded-full transition-colors duration-200
-                            ${isDragging ? 'bg-primary/10' : 'bg-muted'}
+                            absolute inset-0 flex items-center justify-center select-none
+                            font-display font-light leading-none tracking-[0.3em]
+                            pointer-events-none transition-all duration-500
+                            text-[5.5rem] sm:text-[7rem]
+                            ${isDragging ? 'text-primary/6' : 'text-foreground/[0.03] group-hover:text-foreground/[0.05]'}
                         `}
                     >
-                        <ImagePlus
-                            className={`
-                                h-8 w-8 sm:h-10 sm:w-10 transition-colors duration-200
-                                ${isDragging ? 'text-primary' : 'text-muted-foreground'}
-                            `}
-                        />
+                        PHOTO
+                    </span>
+
+                    {/* Plus icon */}
+                    <div
+                        className={`
+                            relative z-10 w-9 h-9 border flex items-center justify-center
+                            transition-all duration-200
+                            ${isDragging ? 'border-primary text-primary' : 'border-border/70 text-muted-foreground group-hover:border-primary/60 group-hover:text-primary'}
+                        `}
+                    >
+                        <Plus className="h-4 w-4" />
                     </div>
-                    <div className="text-center space-y-1.5">
-                        <p className="text-sm font-medium">
-                            <span className="text-primary">Click to upload</span>
+
+                    {/* Labels */}
+                    <div className="relative z-10 text-center space-y-1.5">
+                        <p className="text-[11px] tracking-[0.25em] uppercase font-medium">
+                            <span className={isDragging ? 'text-primary' : 'text-foreground/80'}>
+                                Click to upload
+                            </span>
                             <span className="text-muted-foreground"> or drag and drop</span>
                         </p>
-                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 10MB</p>
+                        <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/60">
+                            PNG &middot; JPG &middot; WEBP
+                        </p>
                     </div>
                 </label>
             </div>
