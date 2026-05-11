@@ -80,11 +80,16 @@ const Crop = () => {
                         <SelectValue placeholder="Select target size" />
                     </SelectTrigger>
                     <SelectContent>
-                        {imageConfigArr.map(({ name, descripton }) => (
-                            <SelectItem key={name} value={name} className="text-xs">
-                                {`${name}${descripton ? ' (' + descripton + ')' : ''}`}
-                            </SelectItem>
-                        ))}
+                        {imageConfigArr.map(({ name, width, height, unit }) => {
+                            const wMm = unit === 'cm' ? Math.round(width * 10) : unit === 'inch' ? Math.round(width * 25.4) : width;
+                            const hMm = unit === 'cm' ? Math.round(height * 10) : unit === 'inch' ? Math.round(height * 25.4) : height;
+                            return (
+                                <SelectItem key={name} value={name} className="text-xs flex justify-between">
+                                    <span>{name}</span>
+                                    <span className="ml-3 text-muted-foreground/60 tabular-nums">{wMm}×{hMm}mm</span>
+                                </SelectItem>
+                            );
+                        })}
                     </SelectContent>
                 </Select>
             </div>
