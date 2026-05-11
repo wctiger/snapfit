@@ -1,19 +1,17 @@
 import { Download, Loader2, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useStore } from '../../stores/store';
-import photoPaperConfigRaw from '../../config/photo-paper-config.json';
-import useImageCollate from './hooks/useImageCollate';
-import StyledPaper from '../../components/StyledPaper';
-import { IImageConfig } from '../../types';
-
-const photoPaperConfigArr = photoPaperConfigRaw as IImageConfig[];
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import photoPaperConfigRaw from '../../config/photo-paper-config.json';
+import useImageCollate from './hooks/useImageCollate';
+import { useStore } from '../../stores/store';
+import { IImageConfig } from '../../types';
+import StyledPaper from '../../components/StyledPaper';
 
-const BG_OPTIONS = [
-    { value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' },
-];
+const photoPaperConfigArr = photoPaperConfigRaw as IImageConfig[];
+
+const BG_OPTIONS = [{ value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' }];
 
 const Collate = () => {
     const { uploadImage, photoPaper, setPhotoPaper } = useStore();
@@ -117,10 +115,7 @@ const Collate = () => {
                                     <Loader2 className="h-5 w-5 animate-spin text-primary" />
                                 </div>
                             )}
-                            <canvas
-                                id="collate-canvas"
-                                className="max-w-full max-h-[55vh] sm:max-h-[60vh] shadow-md"
-                            />
+                            <canvas id="collate-canvas" className="max-w-full max-h-[55vh] sm:max-h-[60vh] shadow-md" />
                         </div>
                     </div>
 

@@ -16,16 +16,16 @@ interface AppState {
     setPhotoPaper: (paper: IImageConfig | null) => void;
 }
 
-export const useStore = create<AppState>()((set) => ({
+export const useStore = create<AppState>()(set => ({
     theme: 'light',
     uploadImage: null,
     crop: null,
     targetImage: null,
     photoPaper: null,
 
-    setTheme: (theme) => set({ theme }),
-    setUploadImage: (uploadImage) => set({ uploadImage }),
-    setCrop: (crop) => set({ crop }),
-    setTargetImage: (targetImage) => set({ targetImage }),
-    setPhotoPaper: (photoPaper) => set({ photoPaper }),
+    setTheme: theme => set({ theme }),
+    setUploadImage: uploadImage => set({ uploadImage }),
+    setCrop: crop => set({ crop }),
+    setTargetImage: targetImage => set({ targetImage }),
+    setPhotoPaper: photoPaper => set({ photoPaper }),
 }));

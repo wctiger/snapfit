@@ -31,9 +31,6 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     return { croppedImage, rawImageUrl };
 }
 
-const worker = new Worker(new URL('./imageWorker.ts', import.meta.url), { type: 'module' });
-
-let offscreen: OffscreenCanvas | null = null;
 
 export function generateCollate(
     patternImage: HTMLImageElement,
@@ -176,5 +173,3 @@ function calculatePositions(
         rotatePaper,
     };
 }
-
-function getWatermark() {}
