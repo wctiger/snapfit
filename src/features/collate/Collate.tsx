@@ -11,8 +11,6 @@ import { cn } from '@/lib/utils';
 
 const BG_OPTIONS = [
     { value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' },
-    { value: 'blue', label: 'Blue', bgClass: 'bg-blue-500', borderClass: '' },
-    { value: '#333', label: 'Gray', bgClass: 'bg-neutral-600', borderClass: '' },
 ];
 
 const Collate = () => {
@@ -23,7 +21,8 @@ const Collate = () => {
 
     useEffect(() => {
         //@ts-ignore
-        setPhotoPaper({ ...photoPaperConfigArr[0], backgroundColor });
+        const defaultPaper = photoPaperConfigArr.find((c: any) => c.name === '6寸(4R)') ?? photoPaperConfigArr[0];
+        setPhotoPaper({ ...defaultPaper, backgroundColor });
     }, []);
 
     const onPhotoPaperChange = (value: string) => {
