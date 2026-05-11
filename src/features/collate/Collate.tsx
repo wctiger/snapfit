@@ -1,6 +1,7 @@
 import { Download, Loader2, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import photoPaperConfigRaw from '../../config/photo-paper-config.json';
@@ -8,6 +9,7 @@ import useImageCollate from './hooks/useImageCollate';
 import { useStore } from '../../stores/store';
 import { IImageConfig } from '../../types';
 import StyledPaper from '../../components/StyledPaper';
+import { CUSTOM_NAME, DimUnit, toInternalConfig } from '../customDimensions';
 
 const photoPaperConfigArr = photoPaperConfigRaw as IImageConfig[];
 
@@ -19,12 +21,32 @@ const Collate = () => {
 
     const [backgroundColor, setBackgroundColor] = useState('#fff');
 
+    const [customUnit, setCustomUnit] = useState<DimUnit>('mm');
+    const [customW, setCustomW] = useState('');
+    const [customH, setCustomH] = useState('');
+
+    const isCustom = photoPaper?.name === CUSTOM_NAME;
+
     useEffect(() => {
         const defaultPaper = photoPaperConfigArr.find(c => c.name === '6寸(4R)') ?? photoPaperConfigArr[0];
         setPhotoPaper({ ...defaultPaper, backgroundColor });
     }, []);
 
+    // Debounce custom dim changes so canvas work only fires after typing stops
+    useEffect(() => {
+        if (!isCustom) return;
+        const wv = parseFloat(customW);
+        const hv = parseFloat(customH);
+        if (!(wv > 0 && hv > 0)) return;
+        const t = setTimeout(() => setPhotoPaper(toInternalConfig(wv, hv, customUnit, backgroundColor)), 400);
+        return () => clearTimeout(t);
+    }, [customW, customH, customUnit, isCustom]);
+
     const onPhotoPaperChange = (value: string) => {
+        if (value === CUSTOM_NAME) {
+            setPhotoPaper({ name: CUSTOM_NAME, width: 0, height: 0, unit: 'cm', backgroundColor });
+            return;
+        }
         const selectedConfig = photoPaperConfigArr.find(config => config.name === value);
         if (selectedConfig) {
             setPhotoPaper({ ...selectedConfig, backgroundColor });
@@ -65,8 +87,53 @@ const Collate = () => {
                                             {`${name} ${unit}`}
                                         </SelectItem>
                                     ))}
+                                    <SelectItem value={CUSTOM_NAME} className="text-xs">
+                                        <span>{CUSTOM_NAME}</span>
+                                        <span className="ml-3 text-muted-foreground/60">enter dimensions</span>
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
+
+                            {isCustom && (
+                                <div className="mt-2 space-y-2">
+                                    <div className="flex gap-1">
+                                        {(['mm', 'inch'] as const).map(u => (
+                                            <button
+                                                key={u}
+                                                onClick={() => setCustomUnit(u)}
+                                                className={cn(
+                                                    'px-2.5 py-1 text-[10px] tracking-[0.15em] uppercase border transition-colors',
+                                                    customUnit === u
+                                                        ? 'border-primary text-primary bg-primary/5'
+                                                        : 'border-border/50 text-muted-foreground hover:border-border'
+                                                )}
+                                            >
+                                                {u}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="number"
+                                            placeholder="W"
+                                            value={customW}
+                                            min={1}
+                                            className="h-8 text-xs w-20"
+                                            onChange={e => setCustomW(e.target.value)}
+                                        />
+                                        <span className="text-muted-foreground/50 text-xs">×</span>
+                                        <Input
+                                            type="number"
+                                            placeholder="H"
+                                            value={customH}
+                                            min={1}
+                                            className="h-8 text-xs w-20"
+                                            onChange={e => setCustomH(e.target.value)}
+                                        />
+                                        <span className="text-[10px] text-muted-foreground/50">{customUnit}</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Background swatches */}

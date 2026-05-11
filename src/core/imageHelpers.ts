@@ -31,7 +31,6 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
     return { croppedImage, rawImageUrl };
 }
 
-
 export function generateCollate(
     patternImage: HTMLImageElement,
     targetImageConfig: IImageConfig,

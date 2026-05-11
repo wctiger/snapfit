@@ -2,14 +2,17 @@ import { Download, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
 import imageConfigRaw from '../../config/target-image-config.json';
 import { getCroppedImg } from '../../core/imageHelpers';
 import { useStore } from '../../stores/store';
 import { IImageConfig } from '../../types';
 import { downloadImage } from '../../utils';
 import StyledPaper from '../../components/StyledPaper';
+import { CUSTOM_NAME, DimUnit, toInternalConfig } from '../customDimensions';
 
 const imageConfigArr = imageConfigRaw as IImageConfig[];
 
@@ -22,14 +25,27 @@ const Crop = () => {
 
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);
-    const [cropRatio, setCropRatio] = useState(0);
+
+    const [customUnit, setCustomUnit] = useState<DimUnit>('mm');
+    const [customW, setCustomW] = useState('');
+    const [customH, setCustomH] = useState('');
+
+    const isCustom = targetImage?.name === CUSTOM_NAME;
+    const cropRatio = targetImage && targetImage.width > 0 ? targetImage.width / targetImage.height : undefined;
 
     useEffect(() => {
-        const selectedConfig = imageConfigArr[0];
-        const ratio = selectedConfig.width / selectedConfig.height;
-        setCropRatio(ratio);
-        setTargetImage(selectedConfig);
+        setTargetImage(imageConfigArr[0]);
     }, []);
+
+    // Debounce custom dim changes so canvas work only fires after typing stops
+    useEffect(() => {
+        if (!isCustom) return;
+        const wv = parseFloat(customW);
+        const hv = parseFloat(customH);
+        if (!(wv > 0 && hv > 0)) return;
+        const t = setTimeout(() => setTargetImage(toInternalConfig(wv, hv, customUnit)), 400);
+        return () => clearTimeout(t);
+    }, [customW, customH, customUnit, isCustom]);
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
@@ -43,10 +59,12 @@ const Crop = () => {
     };
 
     const onTargetImageChange = (value: string) => {
+        if (value === CUSTOM_NAME) {
+            setTargetImage({ name: CUSTOM_NAME, width: 0, height: 0, unit: 'cm' });
+            return;
+        }
         const selectedConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
-            const ratio = selectedConfig.width / selectedConfig.height;
-            setCropRatio(ratio);
             setTargetImage(selectedConfig);
         }
     };
@@ -98,8 +116,53 @@ const Crop = () => {
                                 </SelectItem>
                             );
                         })}
+                        <SelectItem value={CUSTOM_NAME} className="text-xs">
+                            <span>{CUSTOM_NAME}</span>
+                            <span className="ml-3 text-muted-foreground/60">enter dimensions</span>
+                        </SelectItem>
                     </SelectContent>
                 </Select>
+
+                {isCustom && (
+                    <div className="mt-2 space-y-2">
+                        <div className="flex gap-1">
+                            {(['mm', 'inch'] as const).map(u => (
+                                <button
+                                    key={u}
+                                    onClick={() => setCustomUnit(u)}
+                                    className={cn(
+                                        'px-2.5 py-1 text-[10px] tracking-[0.15em] uppercase border transition-colors',
+                                        customUnit === u
+                                            ? 'border-primary text-primary bg-primary/5'
+                                            : 'border-border/50 text-muted-foreground hover:border-border'
+                                    )}
+                                >
+                                    {u}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="number"
+                                placeholder="W"
+                                value={customW}
+                                min={1}
+                                className="h-8 text-xs w-20"
+                                onChange={e => setCustomW(e.target.value)}
+                            />
+                            <span className="text-muted-foreground/50 text-xs">×</span>
+                            <Input
+                                type="number"
+                                placeholder="H"
+                                value={customH}
+                                min={1}
+                                className="h-8 text-xs w-20"
+                                onChange={e => setCustomH(e.target.value)}
+                            />
+                            <span className="text-[10px] text-muted-foreground/50">{customUnit}</span>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Crop area */}
