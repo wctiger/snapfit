@@ -2,8 +2,10 @@ import { Download, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import { useStore } from '../../stores/store';
-import imageConfigArr from '../../config/target-image-config.json';
+import imageConfigRaw from '../../config/target-image-config.json';
 import { IImageConfig } from '../../types';
+
+const imageConfigArr = imageConfigRaw as IImageConfig[];
 import { getCroppedImg } from '../../core/imageHelpers';
 import { downloadImage } from '../../utils';
 import StyledPaper from '../../components/StyledPaper';
@@ -23,12 +25,11 @@ const Crop = () => {
     const [cropRatio, setCropRatio] = useState(0);
 
     useEffect(() => {
-        //@ts-ignore
-        const selectedConfig: IImageConfig = imageConfigArr[0];
+        const selectedConfig = imageConfigArr[0];
         const ratio = selectedConfig.width / selectedConfig.height;
         setCropRatio(ratio);
         setTargetImage(selectedConfig);
-    }, [imageConfigArr]);
+    }, []);
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
@@ -42,8 +43,7 @@ const Crop = () => {
     };
 
     const onTargetImageChange = (value: string) => {
-        //@ts-ignore
-        const selectedConfig: IImageConfig = imageConfigArr.find(config => config.name === value);
+        const selectedConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
             const ratio = selectedConfig.width / selectedConfig.height;
             setCropRatio(ratio);
