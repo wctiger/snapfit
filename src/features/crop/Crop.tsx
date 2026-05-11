@@ -12,23 +12,12 @@ import { useStore } from '../../stores/store';
 import { IImageConfig } from '../../types';
 import { downloadImage } from '../../utils';
 import StyledPaper from '../../components/StyledPaper';
+import { CUSTOM_NAME, DimUnit, toInternalConfig } from '../customDimensions';
 
 const imageConfigArr = imageConfigRaw as IImageConfig[];
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
-const CUSTOM_NAME = 'Custom';
-
-type DimUnit = 'mm' | 'inch';
-
-function toInternalConfig(w: number, h: number, unit: DimUnit): IImageConfig {
-    return {
-        name: CUSTOM_NAME,
-        width: unit === 'mm' ? w / 10 : w,
-        height: unit === 'mm' ? h / 10 : h,
-        unit: unit === 'mm' ? 'cm' : 'inch',
-    };
-}
 
 const Crop = () => {
     const croppedImageRaw = useRef<string>('');
@@ -36,30 +25,27 @@ const Crop = () => {
 
     const [crop, setLocalCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(ZOOM_MIN);
-    const [cropRatio, setCropRatio] = useState(0);
 
     const [customUnit, setCustomUnit] = useState<DimUnit>('mm');
     const [customW, setCustomW] = useState('');
     const [customH, setCustomH] = useState('');
 
     const isCustom = targetImage?.name === CUSTOM_NAME;
+    const cropRatio = targetImage && targetImage.width > 0 ? targetImage.width / targetImage.height : undefined;
 
     useEffect(() => {
-        const selectedConfig = imageConfigArr[0];
-        const ratio = selectedConfig.width / selectedConfig.height;
-        setCropRatio(ratio);
-        setTargetImage(selectedConfig);
+        setTargetImage(imageConfigArr[0]);
     }, []);
 
-    const applyCustomDims = (w: string, h: string, unit: DimUnit) => {
-        const wv = parseFloat(w);
-        const hv = parseFloat(h);
-        if (wv > 0 && hv > 0) {
-            const cfg = toInternalConfig(wv, hv, unit);
-            setCropRatio(cfg.width / cfg.height);
-            setTargetImage(cfg);
-        }
-    };
+    // Debounce custom dim changes so canvas work only fires after typing stops
+    useEffect(() => {
+        if (!isCustom) return;
+        const wv = parseFloat(customW);
+        const hv = parseFloat(customH);
+        if (!(wv > 0 && hv > 0)) return;
+        const t = setTimeout(() => setTargetImage(toInternalConfig(wv, hv, customUnit)), 400);
+        return () => clearTimeout(t);
+    }, [customW, customH, customUnit, isCustom]);
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setCrop(croppedAreaPixels);
@@ -79,8 +65,6 @@ const Crop = () => {
         }
         const selectedConfig = imageConfigArr.find(config => config.name === value);
         if (selectedConfig) {
-            const ratio = selectedConfig.width / selectedConfig.height;
-            setCropRatio(ratio);
             setTargetImage(selectedConfig);
         }
     };
@@ -145,10 +129,7 @@ const Crop = () => {
                             {(['mm', 'inch'] as const).map(u => (
                                 <button
                                     key={u}
-                                    onClick={() => {
-                                        setCustomUnit(u);
-                                        applyCustomDims(customW, customH, u);
-                                    }}
+                                    onClick={() => setCustomUnit(u)}
                                     className={cn(
                                         'px-2.5 py-1 text-[10px] tracking-[0.15em] uppercase border transition-colors',
                                         customUnit === u
@@ -167,10 +148,7 @@ const Crop = () => {
                                 value={customW}
                                 min={1}
                                 className="h-8 text-xs w-20"
-                                onChange={e => {
-                                    setCustomW(e.target.value);
-                                    applyCustomDims(e.target.value, customH, customUnit);
-                                }}
+                                onChange={e => setCustomW(e.target.value)}
                             />
                             <span className="text-muted-foreground/50 text-xs">×</span>
                             <Input
@@ -179,10 +157,7 @@ const Crop = () => {
                                 value={customH}
                                 min={1}
                                 className="h-8 text-xs w-20"
-                                onChange={e => {
-                                    setCustomH(e.target.value);
-                                    applyCustomDims(customW, e.target.value, customUnit);
-                                }}
+                                onChange={e => setCustomH(e.target.value)}
                             />
                             <span className="text-[10px] text-muted-foreground/50">{customUnit}</span>
                         </div>
@@ -197,7 +172,7 @@ const Crop = () => {
                     crop={crop}
                     onCropChange={point => setLocalCrop(point)}
                     zoom={zoom}
-                    aspect={cropRatio || undefined}
+                    aspect={cropRatio}
                     minZoom={ZOOM_MIN}
                     maxZoom={ZOOM_MAX}
                     onZoomChange={z => setZoom(z)}

@@ -9,24 +9,11 @@ import useImageCollate from './hooks/useImageCollate';
 import { useStore } from '../../stores/store';
 import { IImageConfig } from '../../types';
 import StyledPaper from '../../components/StyledPaper';
+import { CUSTOM_NAME, DimUnit, toInternalConfig } from '../customDimensions';
 
 const photoPaperConfigArr = photoPaperConfigRaw as IImageConfig[];
 
 const BG_OPTIONS = [{ value: '#fff', label: 'White', bgClass: 'bg-white', borderClass: 'border border-border' }];
-
-const CUSTOM_NAME = 'Custom';
-
-type DimUnit = 'mm' | 'inch';
-
-function toInternalConfig(w: number, h: number, unit: DimUnit, backgroundColor: string): IImageConfig {
-    return {
-        name: CUSTOM_NAME,
-        width: unit === 'mm' ? w / 10 : w,
-        height: unit === 'mm' ? h / 10 : h,
-        unit: unit === 'mm' ? 'cm' : 'inch',
-        backgroundColor,
-    };
-}
 
 const Collate = () => {
     const { uploadImage, photoPaper, setPhotoPaper } = useStore();
@@ -45,13 +32,15 @@ const Collate = () => {
         setPhotoPaper({ ...defaultPaper, backgroundColor });
     }, []);
 
-    const applyCustomDims = (w: string, h: string, unit: DimUnit, bgColor: string) => {
-        const wv = parseFloat(w);
-        const hv = parseFloat(h);
-        if (wv > 0 && hv > 0) {
-            setPhotoPaper(toInternalConfig(wv, hv, unit, bgColor));
-        }
-    };
+    // Debounce custom dim changes so canvas work only fires after typing stops
+    useEffect(() => {
+        if (!isCustom) return;
+        const wv = parseFloat(customW);
+        const hv = parseFloat(customH);
+        if (!(wv > 0 && hv > 0)) return;
+        const t = setTimeout(() => setPhotoPaper(toInternalConfig(wv, hv, customUnit, backgroundColor)), 400);
+        return () => clearTimeout(t);
+    }, [customW, customH, customUnit, isCustom]);
 
     const onPhotoPaperChange = (value: string) => {
         if (value === CUSTOM_NAME) {
@@ -111,10 +100,7 @@ const Collate = () => {
                                         {(['mm', 'inch'] as const).map(u => (
                                             <button
                                                 key={u}
-                                                onClick={() => {
-                                                    setCustomUnit(u);
-                                                    applyCustomDims(customW, customH, u, backgroundColor);
-                                                }}
+                                                onClick={() => setCustomUnit(u)}
                                                 className={cn(
                                                     'px-2.5 py-1 text-[10px] tracking-[0.15em] uppercase border transition-colors',
                                                     customUnit === u
@@ -133,10 +119,7 @@ const Collate = () => {
                                             value={customW}
                                             min={1}
                                             className="h-8 text-xs w-20"
-                                            onChange={e => {
-                                                setCustomW(e.target.value);
-                                                applyCustomDims(e.target.value, customH, customUnit, backgroundColor);
-                                            }}
+                                            onChange={e => setCustomW(e.target.value)}
                                         />
                                         <span className="text-muted-foreground/50 text-xs">×</span>
                                         <Input
@@ -145,10 +128,7 @@ const Collate = () => {
                                             value={customH}
                                             min={1}
                                             className="h-8 text-xs w-20"
-                                            onChange={e => {
-                                                setCustomH(e.target.value);
-                                                applyCustomDims(customW, e.target.value, customUnit, backgroundColor);
-                                            }}
+                                            onChange={e => setCustomH(e.target.value)}
                                         />
                                         <span className="text-[10px] text-muted-foreground/50">{customUnit}</span>
                                     </div>
